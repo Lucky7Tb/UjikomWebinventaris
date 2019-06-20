@@ -33,7 +33,7 @@
                     <img src="<?= base_url('assets/img/papyrus.png') ?>">
                 </div>
                 <a href="#user"><img class="circle" src="<?= base_url('assets/img/IMG-20190520-WA0017.jpg') ?>"></a>
-                <a href="#name"><span class="black-text name"><?= $this->session->userdata('user') ?></span></a>
+                <a href="#name"><span class="black-text name">Welcome</span></a>
                 <?php if ($this->session->userdata('level') == 1) : ?>
                     <a href="#email"><span class="black-text email">Administrator</span></a>
                 <?php elseif ($this->session->userdata('level') == 2) : ?>
