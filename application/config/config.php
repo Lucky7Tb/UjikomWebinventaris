@@ -449,7 +449,7 @@ $config['global_xss_filtering'] = FALSE;
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
 $config['csrf_protection'] = TRUE;
-$config['csrf_token_name'] = 'ZjJlNTY2OTc4ZTk0YzE4MmEzMzVjNzNlYzkxMjAzZDk';
+$config['csrf_token_name'] = 'CSRFTOKENFQRPLN';
 $config['csrf_cookie_name'] = 'NDc4MDc3MGQxYmRlODY5ZmFjNDRjNDc2ZGQzNjc1ZWY';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = TRUE;
