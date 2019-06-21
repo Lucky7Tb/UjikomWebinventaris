@@ -1,9 +1,3 @@
-body {
-	background-image: url("../img/papyrus.png");
-	background-size: cover;
-	background-repeat: no-repeat;
-}
-
 .loginbackground,
 .registerbackground {
 	margin-top: 5%;

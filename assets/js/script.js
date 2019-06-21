@@ -28,28 +28,30 @@ window.addEventListener("load", function() {
 $(document).ready(function() {
 	$(".btn-submit").click(function() {
 		const url = $(".form").attr("action");
-		const item = $("#itemname").val();
-		const itemammount = $("#itemammount").val();
-		const conditions = $("#conditions").val();
-		const type = $("#type").val();
-		const room = $("#room").val();
-		const csrfval = $("#csrf").attr("value");
+		const data = $(".form").serialize();
+		$("#loader").show();
 		$.ajax({
 			type: "POST",
 			url: url,
-			data: {
-				item: item,
-				itemammount: itemammount,
-				conditions: conditions,
-				type: type,
-				room: room,
-				ZjJlNTY2OTc4ZTk0YzE4MmEzMzVjNzNlYzkxMjAzZDk: csrfval
-			},
+			data: data,
 			dataType: "json",
-			success: function() {
-				document.location.href =
-					"http://localhost/latujikomci/admin/index.html";
+			success: function(response) {
+				$("#itemname").val("");
+				$("#itemammount").val("");
+				M.toast({
+					html: "Data Berhasil Di Tambahkan"
+				});
+				$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+				$("#loader").hide();
+				$("#datatable").load("http://localhost/latujikomci/admin/table");
 			}
 		});
 	});
+
+	//Ajaxload content
+	// $("#test").click(function(e) {
+	// 	e.preventDefault();
+	// 	$("#content").load("http://localhost/latujikomci/admin/test");
+	// 	loading.style.display = "none";
+	// });
 });
