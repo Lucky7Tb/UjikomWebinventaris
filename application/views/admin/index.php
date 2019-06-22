@@ -13,12 +13,11 @@
                         <div class="input-field col s6">
                             <input id="itemname" name="itemname" type="text">
                             <label for="itemname">Nama Barang</label>
-                            <span class="helper-text red-text text-darken-2"><?= form_error('itemname') ?></span>
+
                         </div>
                         <div class="input-field col s6">
                             <input name="itemammount" id="itemammount" type="number">
                             <label for="jumlah">Jumlah Barang</label>
-                            <span class="helper-text red-text text-darken-2"><?= form_error('itemammount') ?></span>
                         </div>
                         <div class="input-field col s6">
                             <select id="conditions" name="conditions">
@@ -26,7 +25,6 @@
                                 <option value="Tidak Baik">Tidak Baik</option>
                             </select>
                             <label>Kondisi Barang</label>
-                            <span class="helper-text red-text text-darken-2"><?= form_error('conditions') ?></span>
                         </div>
                         <div class="input-field col s6">
                             <select id="type" name="type">
@@ -35,7 +33,6 @@
                                 <?php endforeach; ?>
                             </select>
                             <label>Jenis Barang</label>
-                            <span class="helper-text red-text text-darken-2"><?= form_error('type') ?></span>
                         </div>
                         <div class="input-field col s12">
                             <select id="room" name="room">
@@ -44,7 +41,6 @@
                                 <?php endforeach; ?>
                             </select>
                             <label>Ruangan</label>
-                            <span class="helper-text red-text text-darken-2"><?= form_error('room') ?></span>
                         </div>
                     </form>
                 </div>

@@ -47,18 +47,38 @@ class Admin extends CI_Controller
             $itemammount =  $this->input->post('itemammount', TRUE);
             $room = $this->input->post('room', TRUE);
             $type = $this->input->post('type', TRUE);
-            $result = array(
-                'token' => $this->security->get_csrf_hash()
-            );
-            $data = [
-                'id_detail_barang' => uniqid(),
-                'nama_barang' => $item,
-                'kondisi_barang' => $conditions,
-                'jumlah_barang' => $itemammount,
-                'id_ruang' => $room,
-                'id_jenis' => $type
-            ];
-            $this->Barang->AddData($data);
+            if (preg_match("/[a-zA-Z]/", $item)) {
+                if (preg_match("/[0-9]/", $itemammount)) {
+                    $result['message'] = "Data Berhasil Di masukan";
+                    $result['token'] = $this->security->get_csrf_hash();
+                    $result['status'] = "success";
+                    $data = [
+                        'id_detail_barang' => uniqid(),
+                        'nama_barang' => $item,
+                        'kondisi_barang' => $conditions,
+                        'jumlah_barang' => $itemammount,
+                        'id_ruang' => $room,
+                        'id_jenis' => $type
+                    ];
+                    $this->Barang->AddData($data);
+                } else if ($itemammount == '') {
+                    $result['message'] = "Form item ammount harus di isi";
+                    $result['status'] = "failed";
+                    $result['token'] = $this->security->get_csrf_hash();
+                } else {
+                    $result['message'] = "Form item ammount harus numeric";
+                    $result['status'] = "failed";
+                    $result['token'] = $this->security->get_csrf_hash();
+                }
+            } else if ($item == '') {
+                $result['message'] = "Form item harus di isi";
+                $result['status'] = "failed";
+                $result['token'] = $this->security->get_csrf_hash();
+            } else {
+                $result['message'] = "Form item harus alphabet";
+                $result['status'] = "failed";
+                $result['token'] = $this->security->get_csrf_hash();
+            }
             echo json_encode($result);
         }
     }

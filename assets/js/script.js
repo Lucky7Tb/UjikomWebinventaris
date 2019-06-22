@@ -36,14 +36,25 @@ $(document).ready(function() {
 			data: data,
 			dataType: "json",
 			success: function(response) {
-				$("#itemname").val("");
-				$("#itemammount").val("");
-				M.toast({
-					html: "Data Berhasil Di Tambahkan"
-				});
-				$("input[name=CSRFTOKENFQRPLN]").val(response.token);
-				$("#loader").hide();
-				$("#datatable").load("http://localhost/latujikomci/admin/table");
+				if (response.status == "failed") {
+					M.toast({
+						html: response.message,
+						classes: "white-text red lighten-1 z-depth-3"
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+					$("#loader").hide();
+				} else if (response.status == "success") {
+					M.toast({
+						html: response.message,
+						classes: "white-text green lighten-1 z-depth-3"
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+					$("#itemname").val("");
+					$("#itemammount").val("");
+					$("#datatable").load("http://localhost/latujikomci/admin/table");
+					$("#loader").hide();
+				}
+				console.log(response.message);
 			}
 		});
 	});
