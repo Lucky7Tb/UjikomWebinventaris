@@ -13,6 +13,21 @@
 	z-index: 9999;
 }
 
+#loader {
+	position: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-image: url("../../img/Spinner-1s-200px.gif");
+	width: 90%;
+	height: 400px;
+	z-index: 9999;
+	display: none;
+}
+
+.waves-effect.waves-blue .waves-ripple {
+	background-color: rgba(30, 136, 229, 0.65);
+}
+
 header,
 main,
 footer,

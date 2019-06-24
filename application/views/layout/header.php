@@ -17,7 +17,7 @@
             <a href="#!" class="brand-logo"><img src="<?= base_url('assets/img/Logo SMKN 1 Katapang.png') ?>" class="img-responsive" width="50" style="margin-top:5px" alt="profile"></a>
             <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
-                <li><a href="">Link1</a></li>
+                <li><a id="test" href="">Link1</a></li>
                 <li><a href="">Link2</a></li>
                 <li><a href="<?= site_url('auth/register') ?>">Add User</a></li>
                 <li><img src="<?= base_url('assets/img/IMG-20190520-WA0017.jpg') ?>" class="dropdown-trigger circle img-responsive" width="50" height="50" style="margin-top:5px" data-target="dropdown" alt="profile"></li>
@@ -33,7 +33,7 @@
                     <img src="<?= base_url('assets/img/papyrus.png') ?>">
                 </div>
                 <a href="#user"><img class="circle" src="<?= base_url('assets/img/IMG-20190520-WA0017.jpg') ?>"></a>
-                <a href="#name"><span class="black-text name"><?= $this->session->userdata('user') ?></span></a>
+                <a href="#name"><span class="black-text name">Welcome</span></a>
                 <?php if ($this->session->userdata('level') == 1) : ?>
                     <a href="#email"><span class="black-text email">Administrator</span></a>
                 <?php elseif ($this->session->userdata('level') == 2) : ?>
@@ -58,3 +58,5 @@
         <li><a href="#!">three</a></li>
         <li class="divider" tabindex="5"></li>
     </ul>
+
+    <div id="content">
