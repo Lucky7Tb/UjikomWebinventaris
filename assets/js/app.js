@@ -3,18 +3,19 @@ $(document).ready(function() {
 	const FlashDataSuccess = $(".flash-data-success").data("flashdatasuccess");
 
 	if (FlashData) {
-		swal({
-			title: "Error",
-			icon: "error",
+		Swal.fire({
+			type: 'error',
+			title: 'Error',
 			text: FlashData
 		});
 	}
 
 	if (FlashDataSuccess) {
-		swal({
-			title: "Success",
-			icon: "success",
+		Swal.fire({
+			type: 'success',
+			title: 'Success',
 			text: FlashDataSuccess
-		});
+		}).getConfirmButton();
+	
 	}
 });
