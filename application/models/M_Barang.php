@@ -9,14 +9,23 @@ class M_Barang extends CI_Model
         $this->db->insert('detail_barang', $data);
     }
 
+    public function UpdateData($data, $id){
+        $this->db->where('id_detail_barang', $id);  
+        $this->db->update('detail_barang', $data);
+    }
+
+    public function DeleteData($id){
+        $this->db->delete('detail_barang', ['id_detail_barang' => $id]);
+    }
+
     public function GetAllBarang()
     {
-        return $this->db->order_by('kondisi_barang', 'ASC',)->get('detailbarangview')->result();
+        return $this->db->order_by('kondisi_barang', 'ASC')->get('detailbarangview')->result();
     }
 
     public function GetOneBarang($id)
     {
-        return $this->db->get_where('detailbarangview', ['id_detail_barang' => $id])->result();
+        return $this->db->get_where('detail_barang', ['id_detail_barang' => $id])->result();
     }
 
     public function GetJenisBarang()

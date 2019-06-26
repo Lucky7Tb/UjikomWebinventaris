@@ -53,6 +53,11 @@ class M_User extends CI_Model
 
     public function AddUser()
     {
+        if($this->input->post('level') !== ''){
+            $level = $this->input->post('level');
+        }else{
+            $level = 3;
+        }
         $DataUser = [
             'id_user' => 'user-' . mt_rand(),
             'nama_user' =>  $this->input->post('name'),
@@ -60,7 +65,7 @@ class M_User extends CI_Model
             'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
             'email' => $this->input->post('email'),
             'no_telpon' => $this->input->post('phone'),
-            'level' => $this->input->post('level')
+            'level' => $level
         ];
         $this->db->insert('user', $DataUser);
     }

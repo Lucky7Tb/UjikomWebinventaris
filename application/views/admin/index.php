@@ -1,21 +1,22 @@
 <div class="container">
     <div class="formcontainer">
-        <button data-target="modal1" class="btn blue darken-1 modal-trigger">Add Data</button>
+        <button data-target="modal1" class="btn btn-add blue darken-1 modal-trigger">Add Data</button>
 
         <div id="modal1" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <div id="loader"></div>
-                <h4>Add Data</h4>
+                <h4 id="title">Add Data</h4>
                 <div class="divider"></div>
                 <div class="row">
                     <form class="form" action="<?= base_url('admin/adddata') ?>" method="post">
                         <input type="hidden" id="csrf" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+                        <input type="hidden" id="itemid" name="itemid">
                         <div class="input-field col s6">
-                            <input id="itemname" name="itemname" type="text">
+                            <input placeholder="Masukan Nama Barang" id="itemname" name="itemname" type="text">
                             <label for="itemname">Nama Barang</label>
                         </div>
                         <div class="input-field col s6">
-                            <input name="itemammount" id="itemammount" type="number">
+                            <input placeholder="Masukan Jumlah Barang" name="itemammount" id="itemammount" type="number">
                             <label for="jumlah">Jumlah Barang</label>
                         </div>
                         <div class="input-field col s6">
@@ -70,8 +71,8 @@
                         <td><?= $data->nama_ruang ?></td>
                         <td><?= $data->nama_jenis ?></td>
                         <td>
-                            <a data-target="modal1" data-id="<?= $data->id_detail_barang ?>" class="modal-trigger update" href="<?= base_url('admin/updatedata') ?>"><i class="material-icons">update</i></a>
-                            <a href=""><i class="material-icons">delete</i></a>
+                            <a data-target="modal1" data-id="<?= $data->id_detail_barang ?>" class="modal-trigger btn-update" href="<?= base_url('admin/updatedata') ?>"><i class="material-icons">update</i></a>
+                            <a data-id="<?= $data->id_detail_barang?>" class="btn-delete" href="<?= base_url('admin/deletedata')?>"><i class="material-icons">delete</i></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
