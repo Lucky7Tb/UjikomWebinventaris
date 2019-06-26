@@ -37,9 +37,13 @@ $(document).ready(function() {
 			dataType: "json",
 			success: function(response) {
 				if (response.status == "failed") {
-					M.toast({
-						html: response.message,
-						classes: "white-text red lighten-1 z-depth-3"
+					$.each(response.message, function(index, value) {
+						if (value) {
+							M.toast({
+								html: value,
+								classes: "white-text red lighten-1 z-depth-3"
+							});
+						}
 					});
 					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					$("#loader").hide();
@@ -54,15 +58,33 @@ $(document).ready(function() {
 					$("#datatable").load("http://localhost/latujikomci/admin/table");
 					$("#loader").hide();
 				}
-				console.log(response.message);
 			}
 		});
 	});
 
-	//Ajaxload content
-	// $("#test").click(function(e) {
-	// 	e.preventDefault();
-	// 	$("#content").load("http://localhost/latujikomci/admin/test");
-	// 	loading.style.display = "none";
-	// });
+	$(".update").click(function(e) {
+		e.preventDefault();
+		$(".form").attr("action", $(".update").attr("href"));
+		const csrf = $("#csrf").val();
+		$.ajax({
+			type: "POST",
+			url: "http://localhost/latujikomci/admin/getdata",
+			data: {
+				id: $(".update").data("id"),
+				CSRFTOKENFQRPLN: csrf
+			},
+			dataType: "json",
+			success: function(response) {
+				$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+				console.log(response);
+			}
+		});
+	});
 });
+
+//Ajaxload content
+// $("#test").click(function(e) {
+// 	e.preventDefault();
+// 	$("#content").load("http://localhost/latujikomci/admin/test");
+// 	loading.style.display = "none";
+// });

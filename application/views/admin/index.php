@@ -13,7 +13,6 @@
                         <div class="input-field col s6">
                             <input id="itemname" name="itemname" type="text">
                             <label for="itemname">Nama Barang</label>
-
                         </div>
                         <div class="input-field col s6">
                             <input name="itemammount" id="itemammount" type="number">
@@ -50,6 +49,7 @@
                 <button class="modal-close waves-effect waves-red btn-flat">Cancel</button>
             </div>
         </div>
+
         <table id="table_id" class="highlight centered responsive-table">
             <thead>
                 <tr>
@@ -70,7 +70,7 @@
                         <td><?= $data->nama_ruang ?></td>
                         <td><?= $data->nama_jenis ?></td>
                         <td>
-                            <a href="<?= base_url('admin/update/') . $data->id_detail_barang ?>"><i class="material-icons">update</i></a>
+                            <a data-target="modal1" data-id="<?= $data->id_detail_barang ?>" class="modal-trigger update" href="<?= base_url('admin/updatedata') ?>"><i class="material-icons">update</i></a>
                             <a href=""><i class="material-icons">delete</i></a>
                         </td>
                     </tr>

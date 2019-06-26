@@ -14,6 +14,11 @@ class M_Barang extends CI_Model
         return $this->db->order_by('kondisi_barang', 'ASC',)->get('detailbarangview')->result();
     }
 
+    public function GetOneBarang($id)
+    {
+        return $this->db->get_where('detailbarangview', ['id_detail_barang' => $id])->result();
+    }
+
     public function GetJenisBarang()
     {
         return $this->db->get('jenis')->result();
@@ -24,29 +29,25 @@ class M_Barang extends CI_Model
         return $this->db->get('ruang')->result();
     }
 
-    // public function RulesFormBarang()
-    // {
-    //     return [
-    //         [
-    //             'field' => 'itemname',
-    //             'rules' => 'required|alpha'
-    //         ],
-    //         [
-    //             'field' => 'itemammount',
-    //             'rules' => 'required|numeric'
-    //         ],
-    //         [
-    //             'field' => 'condition',
-    //             'rules' => 'required|alpha'
-    //         ],
-    //         [
-    //             'field' => 'type',
-    //             'rules' => 'required|alpha'
-    //         ],
-    //         [
-    //             'field' => 'room',
-    //             'rules' => 'required|alpha'
-    //         ]
-    //     ];
-    // }
+    public function RulesFormBarang()
+    {
+        return [
+            [
+                'field' => 'itemname',
+                'rules' => 'required|alpha_numeric_spaces'
+            ],
+            [
+                'field' => 'itemammount',
+                'rules' => 'required|numeric|greater_than[0]'
+            ],
+        ];
+    }
+
+    public function MessageErrorBarang()
+    {
+        return [
+            'itemname' => form_error('itemname'),
+            'itemammount' => form_error('itemammount'),
+        ];
+    }
 }
