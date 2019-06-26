@@ -19,16 +19,22 @@ M.Modal.init(Modals);
 
 M.Dropdown.init(DropDown, Options);
 
-M.FormSelect.init(Select);
-
 window.addEventListener("load", function() {
 	loading.style.display = "none";
 });
 
 $(document).ready(function() {
+	$('.btn-add').click(function () { 
+		$(".form").attr("action", "http://localhost/latujikomci/admin/adddata");
+		$("#title").html('Add Data');
+		$(".btn-submit").html('Submit');
+		$("#itemname").val("");
+		$("#itemammount").val("");
+	});
+
 	$(".btn-submit").click(function() {
-		const url = $(".form").attr("action");
-		const data = $(".form").serialize();
+		let url = $(".form").attr("action");
+		let data = $(".form").serialize();
 		$("#loader").show();
 		$.ajax({
 			type: "POST",
@@ -57,29 +63,88 @@ $(document).ready(function() {
 					$("#itemammount").val("");
 					$("#datatable").load("http://localhost/latujikomci/admin/table");
 					$("#loader").hide();
+				}else if(response.status == "updated"){
+					M.toast({
+						html: response.message,
+						classes: "white-text green lighten-1 z-depth-3"
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+					$("#datatable").load("http://localhost/latujikomci/admin/table");
+					$("#loader").hide();
 				}
 			}
 		});
 	});
 
-	$(".update").click(function(e) {
+
+
+	$("#datatable").on('click','.btn-update',function(e) {
 		e.preventDefault();
-		$(".form").attr("action", $(".update").attr("href"));
-		const csrf = $("#csrf").val();
+		$(".form").attr("action", $(this).attr("href"));
+		$(".btn-submit").html('Update');
+		$("#title").html('Update Data');
+		let csrf = $("input[name=CSRFTOKENFQRPLN]").val();
 		$.ajax({
 			type: "POST",
 			url: "http://localhost/latujikomci/admin/getdata",
 			data: {
-				id: $(".update").data("id"),
+				id: $(this).data("id"),
 				CSRFTOKENFQRPLN: csrf
 			},
 			dataType: "json",
 			success: function(response) {
 				$("input[name=CSRFTOKENFQRPLN]").val(response.token);
-				console.log(response);
+				$("#itemid").val(response.barang[0].id_detail_barang);
+				$("#itemname").val(response.barang[0].nama_barang);
+				$("#itemammount").val(response.barang[0].jumlah_barang);
+				$("#conditions").val(response.barang[0].kondisi_barang);
+				$("#room").val(response.barang[0].id_ruang);
+				$("#type").val(response.barang[0].id_jenis);
+				M.FormSelect.init(Select);
 			}
 		});
 	});
+
+	$('#datatable').on('click','.btn-delete', function(e) { 
+
+		e.preventDefault();
+		Swal.fire({
+			title: 'Yakin ingin mengahapusnya',
+			text: 'Data akan di hapus secara permanent',
+			type: 'warning',
+			confirmButtonColor: '#1e88e5',
+  			cancelButtonColor: '#d33',
+			showCancelButton: true,
+			confirmButtonText: 'Delete',
+			preConfirm: () => {
+				$.ajax({
+					type: "POST",
+					url: $(this).attr('href'),
+					data: {
+						id: $(this).data("id"),
+						CSRFTOKENFQRPLN:  $("input[name=CSRFTOKENFQRPLN]").val()
+					},
+					dataType: "json",
+					success: function(response){
+						$("#datatable").load("http://localhost/latujikomci/admin/table");
+						$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+					}
+				});
+			  },
+			allowOutsideClick: () => !Swal.isLoading()
+		  }).then((result) => {
+			if (result.value) {
+				Swal.fire({
+					title: "Berhasil",
+					text: "Data berhasil di hapus",
+					type: 'success',
+				})
+			}
+		  })
+
+	});
+
+
 });
 
 //Ajaxload content
