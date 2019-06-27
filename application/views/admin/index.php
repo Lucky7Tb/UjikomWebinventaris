@@ -5,10 +5,10 @@
         <div id="modal1" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <div id="loader"></div>
-                <h4 id="title">Add Data</h4>
+                <h4 id="title">Tambah Data</h4>
                 <div class="divider"></div>
                 <div class="row">
-                    <form class="form" action="<?= base_url('admin/adddata') ?>" method="post">
+                    <form class="form" action="<?= base_url('admin/add_data') ?>" method="post">
                         <input type="hidden" id="csrf" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                         <input type="hidden" id="itemid" name="itemid">
                         <div class="input-field col s6">
@@ -47,7 +47,7 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="waves-effect waves-blue btn-flat btn-submit">Submit</button>
-                <button class="modal-close waves-effect waves-red btn-flat">Cancel</button>
+                <button type="reset"class="modal-close waves-effect waves-red btn-flat">Cancel</button>
             </div>
         </div>
 
@@ -71,12 +71,15 @@
                         <td><?= $data->nama_ruang ?></td>
                         <td><?= $data->nama_jenis ?></td>
                         <td>
-                            <a data-target="modal1" data-id="<?= $data->id_detail_barang ?>" class="modal-trigger btn-update" href="<?= base_url('admin/updatedata') ?>"><i class="material-icons">update</i></a>
-                            <a data-id="<?= $data->id_detail_barang ?>" class="btn-delete" href="<?= base_url('admin/deletedata') ?>"><i class="material-icons">delete</i></a>
+                            <a data-target="modal1" data-id="<?= $data->id_detail_barang ?>" class="modal-trigger btn-update" href="<?= base_url('admin/update_data') ?>"><i class="material-icons">create</i></a>
+                            <a data-id="<?= $data->id_detail_barang ?>" class="btn-delete" href="<?= base_url('admin/delete_data') ?>"><i class="material-icons red-text">delete</i></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <div class="right-align">
+            <?= $this->pagination->create_links() ?>
+        </div>
     </div>
 </div>
