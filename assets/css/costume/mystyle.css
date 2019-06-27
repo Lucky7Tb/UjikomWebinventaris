@@ -28,6 +28,10 @@
 	background-color: rgba(30, 136, 229, 0.65);
 }
 
+ul.pagination li.active{
+	background-color: #1e88e5 !important;
+}
+
 header,
 main,
 footer,
