@@ -1,44 +1,48 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class M_Barang extends CI_Model
+class Model_item extends CI_Model
 {
 
-    public function AddData($data)
+    public function AddItemData($data)
     {
         $this->db->insert('detail_barang', $data);
     }
 
-    public function UpdateData($data, $id){
+    public function UpdateItemData($data, $id){
         $this->db->where('id_detail_barang', $id);  
         $this->db->update('detail_barang', $data);
     }
 
-    public function DeleteData($id){
+    public function DeleteItemData($id){
         $this->db->delete('detail_barang', ['id_detail_barang' => $id]);
     }
 
-    public function GetAllBarang()
+    public function GetAllItem($limit, $start)
     {
-        return $this->db->order_by('kondisi_barang', 'ASC')->get('detailbarangview')->result();
+        return $this->db->order_by('kondisi_barang', 'ASC')->get('detailbarangview', $limit, $start)->result();
     }
 
-    public function GetOneBarang($id)
+    public function GetOneItem($id)
     {
         return $this->db->get_where('detail_barang', ['id_detail_barang' => $id])->result();
     }
 
-    public function GetJenisBarang()
+    public function GetItemType()
     {
         return $this->db->get('jenis')->result();
     }
 
-    public function GetRuangan()
+    public function GetRooms()
     {
         return $this->db->get('ruang')->result();
     }
 
-    public function RulesFormBarang()
+    public function CountItem(){
+        return $this->db->get('detail_barang')->num_rows();
+    }
+
+    public function RulesFormItem()
     {
         return [
             [
@@ -52,7 +56,7 @@ class M_Barang extends CI_Model
         ];
     }
 
-    public function MessageErrorBarang()
+    public function ErrorMessageItem()
     {
         return [
             'itemname' => form_error('itemname'),

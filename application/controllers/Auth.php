@@ -8,10 +8,10 @@ class Auth extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->library('form_validation');
-		$this->load->model('M_User', "User");
+		$this->load->model('Model_user', "User");
 	}
 
-	private function UserCheck()
+	private function user_check()
 	{
 		$Username = $this->input->post('username');
 		$Password = $this->input->post('password');
@@ -23,17 +23,17 @@ class Auth extends CI_Controller
 					'user' => $Username,
 					'level' => $User['level'],
 					'email' => $User['email'],
-					'login' => true
+					'login' => TRUE
 				];
 				$this->session->set_userdata($Data);
 				redirect('admin/index', 'refresh');
 			} else {
-				$this->session->set_flashdata('danger', 'Wrong Password !!!');
+				$this->session->set_flashdata('danger', 'Password salah!!!');
 				echo password_hash($Password, PASSWORD_DEFAULT);
 				redirect('auth/login', 'refresh');
 			}
 		} else {
-			$this->session->set_flashdata('danger', "There is no username like: $Username !!!");
+			$this->session->set_flashdata('danger', "Tidak ada username seperti : $Username !!!");
 			redirect('auth/login', 'refresh');
 		}
 	}
@@ -42,17 +42,17 @@ class Auth extends CI_Controller
 	{
 		$title['title'] = "Register";
 		$this->form_validation->set_rules($this->User->RulesRegister());
-		if ($this->form_validation->run() == false) {
+		if ($this->form_validation->run() == FALSE) {
 			$this->load->view('authlayout/header', $title);
 			$this->load->view('auth/register');
 			$this->load->view('authlayout/footer');
 		} else {
 			$this->User->AddUser();
 			if ($this->session->userdata('level') == 1 || $this->session->userdata('level') == 2) {
-				$this->session->set_flashdata('success', 'Registration is complete !!!');
+				$this->session->set_flashdata('success', 'Registrasi telah berhasil !!!');
 				redirect('admin/index', 'refresh');
 			} else {
-				$this->session->set_flashdata('success', 'Registration is complete !!!');
+				$this->session->set_flashdata('success', 'Registrasi telah berhasil !!!');
 				redirect('auth/login', 'refresh');
 			}
 		}
@@ -65,12 +65,12 @@ class Auth extends CI_Controller
 		if ($this->session->has_userdata('login')) {
 			redirect('admin/index', 'refresh');
 		}
-		if ($this->form_validation->run() == false) {
+		if ($this->form_validation->run() == FALSE) {
 			$this->load->view('authlayout/header', $title);
 			$this->load->view('auth/login');
 			$this->load->view('authlayout/footer');
 		} else {
-			$this->UserCheck();
+			$this->user_check()();
 		}
 	}
 

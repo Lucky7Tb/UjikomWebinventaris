@@ -7,51 +7,62 @@ class Admin extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('M_Barang', 'Barang');
+        $this->load->model('Model_item', 'Item');
         $this->load->library('form_validation');
         if (!$this->session->userdata('login')) {
             redirect('auth/login');
         }
     }
 
-    public function table()
+    public function load_table()
     {
+        $this->load->library('pagination');
+        $config['base_url'] = 'http://localhost/latujikomci/admin/index/'.$this->uri->segment(3);
+
+        $this->pagination->initialize($config);
+
+        $datas['datas'] = $this->Item->GetAllItem(4, $this->uri->segment(3));
         if (!$this->session->has_userdata('login')) {
             redirect('admin/index', 'refresh');
         } else {
-            $datas['datas'] = $this->Barang->GetAllBarang();
             $this->load->view('admin/table', $datas);
         }
     }
 
     public function index()
     {
-        $datas['datas'] = $this->Barang->GetAllBarang();
-        $datas['types'] = $this->Barang->GetJenisBarang();
-        $datas['rooms'] = $this->Barang->GetRuangan();
-        $title['title'] = "Home";
+        $this->load->library('pagination');
+        $config['total_rows'] = $this->Item->CountItem();
+        $config['per_page'] = 4;
+
+        $this->pagination->initialize($config);
+
+        $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->uri->segment(3));
+        $datas['types'] = $this->Item->GetItemType();
+        $datas['rooms'] = $this->Item->GetRooms();
+        $title['title'] = "Dashboard";
         $this->load->view('layout/header', $title);
         $this->load->view('admin/index', $datas);
         $this->load->view('layout/footer');
     }
 
-    public function test()
+    public function room()
     {
-        $title['title'] = "Test";
+        $title['title'] = "Management Ruangan";
         $this->load->view('layout/header', $title);
-        $this->load->view('admin/test');
+        $this->load->view('admin/room');
         $this->load->view('layout/footer');
     }
 
-    public function adddata()
+    public function add_data()
     {
         if (!$this->session->has_userdata('login')) {
             redirect('admin/index', 'refresh');
         } else {
             $response['token'] = $this->security->get_csrf_hash();
-            $this->form_validation->set_rules($this->Barang->RulesFormBarang());
+            $this->form_validation->set_rules($this->Item->RulesFormItem());
             if (!$this->form_validation->run()) {
-                $response['message'] = $this->Barang->MessageErrorBarang();
+                $response['message'] = $this->Item->ErrorMessageItem();
                 $response['status'] = "failed";
             } else {
                 $response['message'] = "Data berhasil di masukan";
@@ -69,20 +80,21 @@ class Admin extends CI_Controller
                     'id_ruang' => $room,
                     'id_jenis' => $type
                 ];
-                $this->Barang->AddData($data);
+                $this->Item->AddItemData($data);
             }
             echo json_encode($response);
         }
     }
 
-    public function updatedata(){
+    public function update_data()
+    {
         if (!$this->session->has_userdata('login')) {
             redirect('admin/index', 'refresh');
         } else {
             $response['token'] = $this->security->get_csrf_hash();
-            $this->form_validation->set_rules($this->Barang->RulesFormBarang());
+            $this->form_validation->set_rules($this->Item->RulesFormItem());
             if (!$this->form_validation->run()) {
-                $response['message'] = $this->Barang->MessageErrorBarang();
+                $response['message'] = $this->Item->ErrorMessageItem();
                 $response['status'] = "failed";
             } else {
                 $response['message'] = "Data berhasil di update";
@@ -100,24 +112,24 @@ class Admin extends CI_Controller
                     'id_ruang' => $room,
                     'id_jenis' => $type
                 ];
-                $this->Barang->UpdateData($data, $id);
+                $this->Item->UpdateItemData($data, $id);
             }
             echo json_encode($response);
         }
     }
 
-    public function deletedata(){
+    public function delete_data()
+    {
         $response['token'] = $this->security->get_csrf_hash();
-        $this->Barang->DeleteData($this->input->post('id', TRUE));
+        $this->Item->DeleteItemData($this->input->post('id', TRUE));
         echo json_encode($response);
     }
 
-    public function getdata()
+    public function get_data()
     {
         $id = $this->input->post('id', TRUE);
         $response['token'] = $this->security->get_csrf_hash();
-        $response['barang'] = $this->Barang->GetOneBarang($id);
+        $response['item'] = $this->Item->GetOneItem($id);
         echo json_encode($response);
     }
-
 }

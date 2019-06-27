@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class M_User extends CI_Model
+class Model_user extends CI_Model
 {
     public function RulesLogin()
     {
