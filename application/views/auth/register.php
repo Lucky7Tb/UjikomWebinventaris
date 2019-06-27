@@ -1,4 +1,3 @@
-<div class="flash-data" data-flashdata="<?= $this->session->flashdata('danger') ?>"></div>
 <div class="registerbackground">
     <div class="container">
         <div class="row">

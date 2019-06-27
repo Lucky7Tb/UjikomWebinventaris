@@ -53,10 +53,10 @@ class M_User extends CI_Model
 
     public function AddUser()
     {
-        if($this->input->post('level') !== ''){
-            $level = $this->input->post('level');
-        }else{
+        if ($this->input->post('level') == '') {
             $level = 3;
+        } else {
+            $level = $this->input->post('level', TRUE);
         }
         $DataUser = [
             'id_user' => 'user-' . mt_rand(),

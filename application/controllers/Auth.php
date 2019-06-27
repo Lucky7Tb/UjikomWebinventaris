@@ -42,17 +42,19 @@ class Auth extends CI_Controller
 	{
 		$title['title'] = "Register";
 		$this->form_validation->set_rules($this->User->RulesRegister());
-		if ($this->session->userdata('level') == 3 || $this->session->userdata('level') == 2) {
-			redirect('admin/index', 'refresh');
-		}
 		if ($this->form_validation->run() == false) {
 			$this->load->view('authlayout/header', $title);
 			$this->load->view('auth/register');
 			$this->load->view('authlayout/footer');
 		} else {
 			$this->User->AddUser();
-			$this->session->set_flashdata('success', 'Registration is complete !!!');
-			redirect('auth/login', 'refresh');
+			if ($this->session->userdata('level') == 1 || $this->session->userdata('level') == 2) {
+				$this->session->set_flashdata('success', 'Registration is complete !!!');
+				redirect('admin/index', 'refresh');
+			} else {
+				$this->session->set_flashdata('success', 'Registration is complete !!!');
+				redirect('auth/login', 'refresh');
+			}
 		}
 	}
 
@@ -63,7 +65,6 @@ class Auth extends CI_Controller
 		if ($this->session->has_userdata('login')) {
 			redirect('admin/index', 'refresh');
 		}
-
 		if ($this->form_validation->run() == false) {
 			$this->load->view('authlayout/header', $title);
 			$this->load->view('auth/login');
@@ -76,7 +77,6 @@ class Auth extends CI_Controller
 	public function logout()
 	{
 		$UserData = ['user', 'level', 'login'];
-
 		$this->session->unset_userdata($UserData);
 		redirect('auth/login', 'refresh');
 	}

@@ -1,21 +1,20 @@
 $(document).ready(function() {
-	const FlashData = $(".flash-data").data("flashdata");
-	const FlashDataSuccess = $(".flash-data-success").data("flashdatasuccess");
+	let FlashData = $(".flash-data").data("flashdata");
+	let FlashDataSuccess = $(".flash-data-success").data("flashdatasuccess");
 
 	if (FlashData) {
 		Swal.fire({
-			type: 'error',
-			title: 'Error',
+			type: "error",
+			title: "Error",
 			text: FlashData
 		});
 	}
 
 	if (FlashDataSuccess) {
 		Swal.fire({
-			type: 'success',
-			title: 'Success',
+			type: "success",
+			title: "Success",
 			text: FlashDataSuccess
-		}).getConfirmButton();
-	
+		});
 	}
 });

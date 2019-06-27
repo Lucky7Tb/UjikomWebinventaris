@@ -17,6 +17,8 @@ M.Sidenav.init(SideNav);
 
 M.Modal.init(Modals);
 
+M.FormSelect.init(Select);
+
 M.Dropdown.init(DropDown, Options);
 
 window.addEventListener("load", function() {
@@ -24,10 +26,19 @@ window.addEventListener("load", function() {
 });
 
 $(document).ready(function() {
-	$('.btn-add').click(function () { 
+	let FlashData = $(".flash").data("flashdata");
+	if (FlashData) {
+		Swal.fire({
+			type: "success",
+			title: "Success",
+			text: FlashData
+		});
+	}
+
+	$(".btn-add").click(function() {
 		$(".form").attr("action", "http://localhost/latujikomci/admin/adddata");
-		$("#title").html('Add Data');
-		$(".btn-submit").html('Submit');
+		$("#title").html("Add Data");
+		$(".btn-submit").html("Submit");
 		$("#itemname").val("");
 		$("#itemammount").val("");
 	});
@@ -63,7 +74,7 @@ $(document).ready(function() {
 					$("#itemammount").val("");
 					$("#datatable").load("http://localhost/latujikomci/admin/table");
 					$("#loader").hide();
-				}else if(response.status == "updated"){
+				} else if (response.status == "updated") {
 					M.toast({
 						html: response.message,
 						classes: "white-text green lighten-1 z-depth-3"
@@ -76,13 +87,11 @@ $(document).ready(function() {
 		});
 	});
 
-
-
-	$("#datatable").on('click','.btn-update',function(e) {
+	$("#datatable").on("click", ".btn-update", function(e) {
 		e.preventDefault();
 		$(".form").attr("action", $(this).attr("href"));
-		$(".btn-submit").html('Update');
-		$("#title").html('Update Data');
+		$(".btn-submit").html("Update");
+		$("#title").html("Update Data");
 		let csrf = $("input[name=CSRFTOKENFQRPLN]").val();
 		$.ajax({
 			type: "POST",
@@ -105,46 +114,42 @@ $(document).ready(function() {
 		});
 	});
 
-	$('#datatable').on('click','.btn-delete', function(e) { 
-
+	$("#datatable").on("click", ".btn-delete", function(e) {
 		e.preventDefault();
 		Swal.fire({
-			title: 'Yakin ingin mengahapusnya',
-			text: 'Data akan di hapus secara permanent',
-			type: 'warning',
-			confirmButtonColor: '#1e88e5',
-  			cancelButtonColor: '#d33',
+			title: "Yakin ingin mengahapusnya",
+			text: "Data akan di hapus secara permanent",
+			type: "warning",
+			confirmButtonColor: "#1e88e5",
+			cancelButtonColor: "#d33",
 			showCancelButton: true,
-			confirmButtonText: 'Delete',
+			confirmButtonText: "Delete",
 			preConfirm: () => {
 				$.ajax({
 					type: "POST",
-					url: $(this).attr('href'),
+					url: $(this).attr("href"),
 					data: {
 						id: $(this).data("id"),
-						CSRFTOKENFQRPLN:  $("input[name=CSRFTOKENFQRPLN]").val()
+						CSRFTOKENFQRPLN: $("input[name=CSRFTOKENFQRPLN]").val()
 					},
 					dataType: "json",
-					success: function(response){
+					success: function(response) {
 						$("#datatable").load("http://localhost/latujikomci/admin/table");
 						$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					}
 				});
-			  },
+			},
 			allowOutsideClick: () => !Swal.isLoading()
-		  }).then((result) => {
+		}).then(result => {
 			if (result.value) {
 				Swal.fire({
 					title: "Berhasil",
 					text: "Data berhasil di hapus",
-					type: 'success',
-				})
+					type: "success"
+				});
 			}
-		  })
-
+		});
 	});
-
-
 });
 
 //Ajaxload content
