@@ -75,11 +75,11 @@
                             <a data-id="<?= $data->id_detail_barang ?>" class="btn-delete" href="<?= base_url('admin/delete_data') ?>"><i class="material-icons red-text">delete</i></a>
                         </td>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <div class="right-align">
-            <?= $this->pagination->create_links() ?>
-        </div>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <div class="right-align">
+                <?= $this->pagination->create_links() ?>
+            </div>
     </div>
 </div>

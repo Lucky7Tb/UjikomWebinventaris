@@ -17,12 +17,12 @@ class Admin extends CI_Controller
     public function load_table()
     {
         $this->load->library('pagination');
-        $config['base_url'] = 'http://localhost/latujikomci/admin/index/'.$this->uri->segment(3);
-
+        $config['total_rows'] = $this->Item->CountItem();
+        $config['per_page'] = 10;
         $this->pagination->initialize($config);
 
-        $datas['datas'] = $this->Item->GetAllItem(4, $this->uri->segment(3));
-        if (!$this->session->has_userdata('login')) {
+        $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->uri->segment(3));
+        if (!$this->session->has_userdata('user')) {
             redirect('admin/index', 'refresh');
         } else {
             $this->load->view('admin/table', $datas);
@@ -33,8 +33,7 @@ class Admin extends CI_Controller
     {
         $this->load->library('pagination');
         $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 4;
-
+        $config['per_page'] = 10;
         $this->pagination->initialize($config);
 
         $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->uri->segment(3));
@@ -56,7 +55,7 @@ class Admin extends CI_Controller
 
     public function add_data()
     {
-        if (!$this->session->has_userdata('login')) {
+        if (!$this->session->has_userdata('user')) {
             redirect('admin/index', 'refresh');
         } else {
             $response['token'] = $this->security->get_csrf_hash();
@@ -88,7 +87,7 @@ class Admin extends CI_Controller
 
     public function update_data()
     {
-        if (!$this->session->has_userdata('login')) {
+        if (!$this->session->has_userdata('user')) {
             redirect('admin/index', 'refresh');
         } else {
             $response['token'] = $this->security->get_csrf_hash();
