@@ -77,9 +77,9 @@
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
-            </table>
-            <div class="right-align">
-                <?= $this->pagination->create_links() ?>
-            </div>
+        </table>
+        <div class="right-align">
+            <?= $this->pagination->create_links() ?>
+        </div>
     </div>
 </div>
