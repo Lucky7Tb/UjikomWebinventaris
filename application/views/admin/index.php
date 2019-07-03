@@ -9,6 +9,9 @@
                     <input autocomplete="off" name="search" id="search" type="text">
                     <label for="search">Cari Nama Barang</label>
                 </div>
+                <div class="col s1">
+                    <img class="image" src="<?= base_url('assets/img/Spinner-1s-200px.gif')?>"  alt="loading">
+                </div>
             </div>
         </form>
         <div id="modal1" class="modal modal-fixed-footer">

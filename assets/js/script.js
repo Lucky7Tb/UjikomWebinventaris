@@ -1,4 +1,5 @@
 const SideNav = document.querySelectorAll(".sidenav");
+
 const DropDown = document.querySelectorAll(".dropdown-trigger");
 
 const Options = {
@@ -8,6 +9,7 @@ const Options = {
 };
 
 const Collaps = document.querySelectorAll('.collapsible');
+
 const Select = document.querySelectorAll("select");
 
 const Modals = document.querySelectorAll(".modal");
@@ -157,14 +159,17 @@ $(document).ready(function() {
 		});
 	});
 	
-	$("#search").keyup(function () {
+	$("#search").on('keyup',function () {
 		let data = $(this).val();
+		$(".image").show();
 		if(data === ''){
-			console.log("data kosong");
+			$(".image").hide();
 			$("#datatable").load("http://localhost/latujikomci/admin/load_table");
 			$(".right-align").load("http://localhost/latujikomci/admin/pagination");
 		}else{
-			$("#datatable").load(`http://localhost/latujikomci/admin/search_data?keyword=${data}`);
+			$("#datatable").load(`http://localhost/latujikomci/admin/search_data?keyword=${data}`, function(){
+				$(".image").hide();
+			});
 		}
 	});
 });
