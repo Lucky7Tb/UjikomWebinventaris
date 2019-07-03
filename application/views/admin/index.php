@@ -7,10 +7,7 @@
                 <input type="hidden" id="csrf" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                 <div class="input-field col s6">
                     <input autocomplete="off" name="search" id="search" type="text">
-                    <label for="search">Cari Barang</label>
-                </div>
-                <div class="col s1" style="margin-top:20px">
-                   <input class="btn blue darken-1" value="submit" type="submit" name="btn-search">
+                    <label for="search">Cari Nama Barang</label>
                 </div>
             </div>
         </form>

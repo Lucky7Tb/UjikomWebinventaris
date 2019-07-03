@@ -156,6 +156,17 @@ $(document).ready(function() {
 			}
 		});
 	});
+	
+	$("#search").keyup(function () {
+		let data = $(this).val();
+		if(data === ''){
+			console.log("data kosong");
+			$("#datatable").load("http://localhost/latujikomci/admin/load_table");
+			$(".right-align").load("http://localhost/latujikomci/admin/pagination");
+		}else{
+			$("#datatable").load(`http://localhost/latujikomci/admin/search_data?keyword=${data}`);
+		}
+	});
 });
 
 //Ajaxload content

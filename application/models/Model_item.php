@@ -23,12 +23,20 @@ class Model_item extends CI_Model
         if($keyword){
             $this->db->like('nama_barang', $keyword);
         }
-        return $this->db->order_by('kondisi_barang', 'ASC')->get('detailbarangview', $limit, $start)->result();
+        return $this->db->order_by('nama_barang', 'ASC')->get('detailbarangview', $limit, $start)->result();
     }
 
     public function GetOneItem($id)
     {
         return $this->db->get_where('detail_barang', ['id_detail_barang' => $id])->result();
+    }
+
+    public function GetItemByName($keyword)
+    {
+        if($keyword){
+            $this->db->like('nama_barang', $keyword);
+        }
+        return $this->db->order_by('nama_barang', 'ASC')->get('detailbarangview')->result();
     }
 
     public function GetItemType()
