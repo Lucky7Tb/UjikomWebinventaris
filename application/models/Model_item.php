@@ -18,8 +18,11 @@ class Model_item extends CI_Model
         $this->db->delete('detail_barang', ['id_detail_barang' => $id]);
     }
 
-    public function GetAllItem($limit, $start)
+    public function GetAllItem($limit, $start, $keyword = null)
     {
+        if($keyword){
+            $this->db->like('nama_barang', $keyword);
+        }
         return $this->db->order_by('kondisi_barang', 'ASC')->get('detailbarangview', $limit, $start)->result();
     }
 

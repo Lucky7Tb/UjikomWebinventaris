@@ -18,7 +18,7 @@ class Admin extends CI_Controller
     {
         $this->load->library('pagination');
         $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 10;
+        $config['per_page'] = 5;
         $this->pagination->initialize($config);
         $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->uri->segment(3));
         if (!$this->session->has_userdata('user')) {
@@ -31,7 +31,7 @@ class Admin extends CI_Controller
     public function pagination(){
         $this->load->library('pagination');
         $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 10;
+        $config['per_page'] = 5;
         $this->pagination->initialize($config);
         $this->load->view('admin/pagination');
     }
@@ -39,10 +39,21 @@ class Admin extends CI_Controller
     public function index()
     {
         $this->load->library('pagination');
-        $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 10;
+
+        if($this->input->post('btn-search')){
+            $data['keyword'] = $this->input->post('search');
+            $this->session->set_userdata('keyword', $data['keyword']);
+        }else{
+            $data['keyword'] = $this->session->userdata('keyword');
+        }
+
+        $this->db->like('nama_barang', $data['keyword']);
+        $this->db->from('detail_barang');
+        $config['total_rows'] = $this->db->count_all_results();
+        $config['per_page'] = 5;
         $this->pagination->initialize($config);
-        $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->uri->segment(3));
+
+        $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->uri->segment(3), $data['keyword']);
         $datas['types'] = $this->Item->GetItemType();
         $datas['rooms'] = $this->Item->GetRooms();
         $title['title'] = "Dashboard";
