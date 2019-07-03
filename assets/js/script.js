@@ -1,5 +1,4 @@
 const SideNav = document.querySelectorAll(".sidenav");
-console.log(window.location.href.substr(window.location.href.lastIndexOf('/') + 1));
 const DropDown = document.querySelectorAll(".dropdown-trigger");
 
 const Options = {
@@ -50,7 +49,6 @@ $(document).ready(function() {
 	$(".btn-submit").click(function() {
 		let url = $(".form").attr("action");
 		let data = $(".form").serialize();
-		let id = {id : window.location.href.substr(window.location.href.lastIndexOf('/') + 1)};
 		$("#loader").show();
 		$.ajax({
 			type: "POST",
@@ -78,15 +76,8 @@ $(document).ready(function() {
 					$("#itemname").val("");
 					$("#itemammount").val("");
 					$("#loader").hide();
-					$("#datatable").load("http://localhost/latujikomci/admin/load_table?id="+id.id);
-					$.get("http://localhost/latujikomci/admin/pagination", id,
-						function (data) {
-							console.log(data);
-							$(".right-align").html(data);
-						},
-						'html'
-					);
-					// $(".right-align").load("http://localhost/latujikomci/admin/pagination?id="+id.id);
+					$("#datatable").load("http://localhost/latujikomci/admin/load_table");
+					$(".right-align").load("http://localhost/latujikomci/admin/pagination");
 				} else if (response.status == "updated") {
 					M.toast({
 						html: response.message,
@@ -94,6 +85,7 @@ $(document).ready(function() {
 					});
 					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					$("#datatable").load("http://localhost/latujikomci/admin/load_table");
+					$(".right-align").load("http://localhost/latujikomci/admin/pagination");
 					$("#loader").hide();
 				}
 			}
@@ -148,6 +140,7 @@ $(document).ready(function() {
 					dataType: "json",
 					success: function(response) {
 						$("#datatable").load("http://localhost/latujikomci/admin/load_table");
+						$(".right-align").load("http://localhost/latujikomci/admin/pagination");
 						$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					}
 				});

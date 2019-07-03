@@ -26,10 +26,9 @@ class Auth extends CI_Controller
 					'login' => TRUE
 				];
 				$this->session->set_userdata($Data);
-				redirect('admin/index', 'refresh');
+				redirect('admin/index/', 'refresh');
 			} else {
 				$this->session->set_flashdata('danger', 'Password salah!!!');
-				echo password_hash($Password, PASSWORD_DEFAULT);
 				redirect('auth/login', 'refresh');
 			}
 		} else {

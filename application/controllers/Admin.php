@@ -18,9 +18,9 @@ class Admin extends CI_Controller
     {
         $this->load->library('pagination');
         $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 3;
+        $config['per_page'] = 10;
         $this->pagination->initialize($config);
-        $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->input->get('id'));
+        $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->uri->segment(3));
         if (!$this->session->has_userdata('user')) {
             redirect('admin/index', 'refresh');
         } else {
@@ -31,17 +31,16 @@ class Admin extends CI_Controller
     public function pagination(){
         $this->load->library('pagination');
         $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 3;
+        $config['per_page'] = 10;
         $this->pagination->initialize($config);
-        $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->input->get('id'));
-        $this->load->view('admin/pagination', $datas);
+        $this->load->view('admin/pagination');
     }
 
     public function index()
     {
         $this->load->library('pagination');
         $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 3;
+        $config['per_page'] = 10;
         $this->pagination->initialize($config);
         $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->uri->segment(3));
         $datas['types'] = $this->Item->GetItemType();
