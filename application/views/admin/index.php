@@ -2,9 +2,8 @@
     <div class="formcontainer">
         <div class="flash" data-flashdata="<?= $this->session->flashdata('success') ?>"></div>
         <button data-target="modal1" class="btn btn-add blue darken-1 modal-trigger">Add Data</button>
-        <form action="<?= base_url('admin/index')?>" method="post">
+        <form>
             <div class="row">
-                <input type="hidden" id="csrf" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                 <div class="input-field col s6">
                     <input autocomplete="off" name="search" id="search" type="text">
                     <label for="search">Cari Nama Barang</label>

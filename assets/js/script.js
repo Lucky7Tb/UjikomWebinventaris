@@ -31,6 +31,8 @@ window.addEventListener("load", function() {
 });
 
 $(document).ready(function() {
+	$('.update_room').hide();
+
 	let FlashData = $(".flash").data("flashdata");
 	if (FlashData) {
 		Swal.fire({
@@ -94,6 +96,42 @@ $(document).ready(function() {
 		});
 	});
 
+	$(".btn-add_room").click(function (e) { 
+		e.preventDefault();
+		$("#room_form").attr("action", "http://localhost/latujikomci/admin/add_room");
+		let url = $("#room_form").attr('action');
+		let data = $("#room_form").serialize();
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: data,
+			dataType: "json",
+			success: function (response) {
+				if (response.status == "failed") {
+					$.each(response.message, function(index, value) {
+						if (value) {
+							M.toast({
+								html: value,
+								classes: "white-text red lighten-1 z-depth-3"
+							});
+						}
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+				} else if (response.status == "success") {
+					M.toast({
+						html: response.message,
+						classes: "white-text green lighten-1 z-depth-3"
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+					$("#room_name").val("");
+					$("#room_desc").val("");
+					$("#room_data").load("http://localhost/latujikomci/admin/load_room_table");
+					$(".room_pagination").load("http://localhost/latujikomci/admin/room_pagination");
+				}
+			}
+		});
+	});
+
 	$("#datatable").on("click", ".btn-update", function(e) {
 		e.preventDefault();
 		$(".form").attr("action", $(this).attr("href"));
@@ -119,6 +157,66 @@ $(document).ready(function() {
 				M.FormSelect.init(Select);
 			}
 		});
+	});
+
+	$("#room_data").on('click', '.btn-update_room' ,function (e) { 
+		e.preventDefault();
+		$("#room_form").attr("action", "http://localhost/latujikomci/admin/update_room");
+		let csrf = $("input[name=CSRFTOKENFQRPLN]").val();
+		$('.btn-add_room').hide();
+		$('.update_room').show();
+		$.ajax({
+			type: "POST",
+			url: "http://localhost/latujikomci/admin/get_room",
+			data: {
+				id : $(this).data('id'),
+				CSRFTOKENFQRPLN : csrf
+			},
+			dataType: "json",
+			success: function (response) {
+				$('#room_name').val(response.room[0].nama_ruang);
+				$('#room_desc').val(response.room[0].keterangan);
+				$('#room_id').val(response.room[0].id_ruang);
+				$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+			}
+		});
+	});
+
+	$(".update_room").click(function (e) { 
+		e.preventDefault();
+		let url = $("#room_form").attr('action');
+		let data = $("#room_form").serialize();
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: data,
+			dataType: "json",
+			success: function (response) {
+				if (response.status == "failed") {
+					$.each(response.message, function(index, value) {
+						if (value) {
+							M.toast({
+								html: value,
+								classes: "white-text red lighten-1 z-depth-3"
+							});
+						}
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+				} else if (response.status == "updated") {
+					M.toast({
+						html: response.message,
+						classes: "white-text green lighten-1 z-depth-3"
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+					$("#room_name").val("");
+					$("#room_desc").val("");
+					$("#room_data").load("http://localhost/latujikomci/admin/load_room_table");
+					$(".room_pagination").load("http://localhost/latujikomci/admin/room_pagination");
+					$('.btn-add_room').show();
+					$('.update_room').hide();
+				}	
+			}
+		});	
 	});
 
 	$("#datatable").on("click", ".btn-delete", function(e) {
@@ -158,6 +256,44 @@ $(document).ready(function() {
 			}
 		});
 	});
+
+	$("#room_data").on("click", ".btn-delete_room", function(e) {
+		e.preventDefault();
+		Swal.fire({
+			title: "Yakin ingin menghapusnya?",
+			text: "Data akan di hapus secara permanent",
+			type: "warning",
+			confirmButtonColor: "#1e88e5",
+			cancelButtonColor: "#d33",
+			showCancelButton: true,
+			confirmButtonText: "Delete",
+			preConfirm: () => {
+				$.ajax({
+					type: "POST",
+					url: $(this).attr("href"),
+					data: {
+						id: $(this).data("id"),
+						CSRFTOKENFQRPLN: $("input[name=CSRFTOKENFQRPLN]").val()
+					},
+					dataType: "json",
+					success: function(response) {
+						$("#room_data").load("http://localhost/latujikomci/admin/load_room_table");
+						$(".room_pagination").load("http://localhost/latujikomci/admin/room_pagination");
+						$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+					}
+				});
+			},
+			allowOutsideClick: () => !Swal.isLoading()
+		}).then(result => {
+			if (result.value) {
+				Swal.fire({
+					title: "Berhasil",
+					text: "Data berhasil di hapus",
+					type: "success"
+				});
+			}
+		});
+	});
 	
 	$("#search").on('keyup',function () {
 		let data = $(this).val();
@@ -172,6 +308,7 @@ $(document).ready(function() {
 			});
 		}
 	});
+
 });
 
 //Ajaxload content

@@ -1,8 +1,4 @@
 <?php
-
-$config['base_url'] = 'http://localhost/latujikomci/admin/index/';
-$config['use_page_numbers'] = TRUE;
-
 $config['full_tag_open'] = '<ul class="pagination">';
 $config['full_tag_close'] = '<ul>';
 

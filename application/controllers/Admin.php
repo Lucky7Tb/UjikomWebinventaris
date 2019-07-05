@@ -8,52 +8,17 @@ class Admin extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Model_item', 'Item');
+        $this->load->model('Model_room', 'Room');
+        $this->load->library('pagination');
         $this->load->library('form_validation');
         if (!$this->session->userdata('login')) {
             redirect('auth/login');
         }
     }
 
-    public function load_table()
-    {
-        $this->load->library('pagination');
-        $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 5;
-        $this->pagination->initialize($config);
-        $urisegment = $this->input->get('uri');
-        if($urisegment == ''){
-            $urisegment = 0;
-        }
-        $datas['datas'] = $this->Item->GetAllItem($config['per_page'],$urisegment);
-        if (!$this->session->has_userdata('user')) {
-            redirect('admin/index', 'refresh');
-        } else {
-            $this->load->view('admin/table', $datas);
-        }
-    }
-
-    public function pagination(){
-        $this->load->library('pagination');
-        $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 5;
-        $this->pagination->initialize($config);
-        $this->load->view('admin/pagination');
-    }
-
-    public function search_data(){
-        $keyword = $this->input->get('keyword');
-        $this->load->library('pagination');
-        $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 5;
-        $this->pagination->initialize($config);
-        $datas['datas'] = $this->Item->GetItemByName($keyword);
-        $this->load->view('admin/table', $datas);
-    }
-
     public function index()
     {
-        $this->load->library('pagination');
-
+        $config['base_url'] = 'http://localhost/latujikomci/admin/index/';
         $config['total_rows'] = $this->Item->CountItem();
         $config['per_page'] = 5;
         $this->pagination->initialize($config);
@@ -69,10 +34,69 @@ class Admin extends CI_Controller
 
     public function room()
     {
+        $config['base_url'] = 'http://localhost/latujikomci/admin/room/';
+        $config['total_rows'] = $this->Room->CountRoom();
+        $config['per_page'] = 3;
+        $this->pagination->initialize($config);
+        $datas['rooms'] = $this->Room->GetAllRooms($config['per_page'], $this->uri->segment(3));
         $title['title'] = "Management Ruangan";
         $this->load->view('layout/header', $title);
-        $this->load->view('admin/room');
+        $this->load->view('admin/room', $datas);
         $this->load->view('layout/footer');
+    }
+
+    public function load_table()
+    {
+        $config['per_page'] = 5;
+        $this->pagination->initialize($config);
+        $urisegment = $this->input->get('uri');
+        if($urisegment == ''){
+            $urisegment = 0;
+        }
+        $datas['datas'] = $this->Item->GetAllItem($config['per_page'],$urisegment);
+        if (!$this->session->has_userdata('user')) {
+            redirect('admin/index', 'refresh');
+        } else {
+            $this->load->view('admin/table', $datas);
+        }
+    }
+    
+    public function load_room_table()
+    {
+        $config['per_page'] = 3;
+        $this->pagination->initialize($config);
+        $datas['rooms'] = $this->Room->GetAllRooms($config['per_page'], 0);
+        if (!$this->session->has_userdata('user')) {
+            redirect('admin/index', 'refresh');
+        } else {
+            $this->load->view('admin/table_room', $datas);
+        }
+    }
+
+    public function pagination(){
+        $config['base_url'] = 'http://localhost/latujikomci/admin/index/';
+        $config['total_rows'] = $this->Item->CountItem();
+        $config['per_page'] = 5;
+        $this->pagination->initialize($config);
+        $this->load->view('admin/pagination');
+    }
+
+    public function room_pagination(){
+        $config['base_url'] = 'http://localhost/latujikomci/admin/room/';
+        $config['total_rows'] = $this->Room->CountRoom();
+        $config['per_page'] = 3;
+        $this->pagination->initialize($config);
+        $this->load->view('admin/pagination');
+    }
+
+    public function search_data(){
+        $keyword = $this->input->get('keyword');
+        $this->load->library('pagination');
+        $config['total_rows'] = $this->Item->CountItem();
+        $config['per_page'] = 5;
+        $this->pagination->initialize($config);
+        $datas['datas'] = $this->Item->GetItemByName($keyword);
+        $this->load->view('admin/table', $datas);
     }
 
     public function add_data()
@@ -102,6 +126,32 @@ class Admin extends CI_Controller
                     'id_jenis' => $type
                 ];
                 $this->Item->AddItemData($data);
+            }
+            echo json_encode($response);
+        }
+    }
+
+    public function add_room()
+    {
+        if (!$this->session->has_userdata('user')) {
+            redirect('admin/room', 'refresh');
+        } else {
+            $response['token'] = $this->security->get_csrf_hash();
+            $this->form_validation->set_rules($this->Room->RulesFormRoom());
+            if (!$this->form_validation->run()) {
+                $response['message'] = $this->Room->ErrorMessageRoom();
+                $response['status'] = "failed";
+            } else {
+                $response['message'] = "Data berhasil di masukan";
+                $response['status'] = "success";
+                $room = $this->input->post('room_name', TRUE);
+                $room_desc = $this->input->post('room_desc', TRUE);
+                $data = [
+                    'id_ruang' => uniqid(),
+                    'nama_ruang' => $room,
+                    'keterangan' => $room_desc,
+                ];
+                $this->Room->AddRoomData($data);
             }
             echo json_encode($response);
         }
@@ -139,10 +189,43 @@ class Admin extends CI_Controller
         }
     }
 
+    public function update_room()
+    {
+        if (!$this->session->has_userdata('user')) {
+            redirect('admin/index', 'refresh');
+        } else {
+            $response['token'] = $this->security->get_csrf_hash();
+            $this->form_validation->set_rules($this->Room->RulesFormRoom());
+            if (!$this->form_validation->run()) {
+                $response['message'] = $this->Item->ErrorMessageRoom();
+                $response['status'] = "failed";
+            } else {
+                $response['message'] = "Data berhasil di update";
+                $response['status'] = "updated";
+                $id = $this->input->post('room_id', TRUE);
+                $room_name = $this->input->post('room_name', TRUE);
+                $room_desc = $this->input->post('room_desc', TRUE);
+                $data = [
+                    'nama_ruang' => $room_name,
+                    'keterangan' => $room_desc
+                ];
+                $this->Room->UpdateRoomData($data, $id);
+            }
+            echo json_encode($response);
+        }
+    }
+
     public function delete_data()
     {
         $response['token'] = $this->security->get_csrf_hash();
         $this->Item->DeleteItemData($this->input->post('id', TRUE));
+        echo json_encode($response);
+    }
+
+    public function delete_room()
+    {
+        $response['token'] = $this->security->get_csrf_hash();
+        $this->Room->DeleteRoomData($this->input->post('id', TRUE));
         echo json_encode($response);
     }
 
@@ -151,6 +234,14 @@ class Admin extends CI_Controller
         $id = $this->input->post('id', TRUE);
         $response['token'] = $this->security->get_csrf_hash();
         $response['item'] = $this->Item->GetOneItem($id);
+        echo json_encode($response);
+    }
+    
+    public function get_room()
+    {
+        $id = $this->input->post('id', TRUE);
+        $response['token'] = $this->security->get_csrf_hash();
+        $response['room'] = $this->Room->GetOneRoom($id);
         echo json_encode($response);
     }
 }

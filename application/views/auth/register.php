@@ -20,19 +20,19 @@
                                 </div>
                                 <div class="input-field  col s6">
                                     <i class="material-icons prefix">person</i>
-                                    <input required placeholder="Username" name="username" id="username" type="text">
+                                    <input required placeholder="Username" name="username" id="username" type="text" value="<?= set_value('username') ?>">
                                     <span class="helper-text red-text text-darken-2"><?= form_error('username') ?></span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s6">
                                     <i class="material-icons prefix">email</i>
-                                    <input required placeholder="Email" name="email" id="email" type="email">
+                                    <input required placeholder="Email" name="email" id="email" type="email" value="<?= set_value('email') ?>">
                                     <span class="helper-text red-text text-darken-2"><?= form_error('email') ?></span>
                                 </div>
                                 <div class="input-field col s6">
                                     <i class="material-icons prefix">phone</i>
-                                    <input required placeholder="Number" name="phone" id="phone" type="text">
+                                    <input required placeholder="Number" name="phone" id="phone" type="text" value="<?= set_value('phone') ?>">
                                     <span class="helper-text red-text text-darken-2"><?= form_error('phone') ?></span>
                                 </div>
                             </div>
