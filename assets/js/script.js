@@ -161,11 +161,11 @@ $(document).ready(function() {
 	
 	$("#search").on('keyup',function () {
 		let data = $(this).val();
+		let urisegment = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
 		$(".image").show();
 		if(data === ''){
 			$(".image").hide();
-			$("#datatable").load("http://localhost/latujikomci/admin/load_table");
-			$(".right-align").load("http://localhost/latujikomci/admin/pagination");
+			$("#datatable").load(`http://localhost/latujikomci/admin/load_table?uri=${urisegment}`);
 		}else{
 			$("#datatable").load(`http://localhost/latujikomci/admin/search_data?keyword=${data}`, function(){
 				$(".image").hide();

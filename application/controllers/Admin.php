@@ -20,7 +20,11 @@ class Admin extends CI_Controller
         $config['total_rows'] = $this->Item->CountItem();
         $config['per_page'] = 5;
         $this->pagination->initialize($config);
-        $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->uri->segment(3));
+        $urisegment = $this->input->get('uri');
+        if($urisegment == ''){
+            $urisegment = 0;
+        }
+        $datas['datas'] = $this->Item->GetAllItem($config['per_page'],$urisegment);
         if (!$this->session->has_userdata('user')) {
             redirect('admin/index', 'refresh');
         } else {
