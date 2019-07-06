@@ -50,7 +50,7 @@
                     <ul>
                         <li><a href="<?= site_url('admin/index')?>">Management Barang</a></li>
                         <li><a class="waves-effect" href="<?= site_url('admin/room')?>">Management Ruangan</a></li>
-                        <li><a class="waves-effect" href="<?= site_url('admin/type_room')?>">Management Jenis Barang</a></li>
+                        <li><a class="waves-effect" href="<?= site_url('admin/item_type')?>">Management Jenis Barang</a></li>
                     </ul>
                 </div>
             </li>
