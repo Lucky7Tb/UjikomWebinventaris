@@ -32,7 +32,7 @@ window.addEventListener("load", function() {
 
 $(document).ready(function() {
 	$('.update_room').hide();
-
+	$('.btn-cancel').hide();
 	let FlashData = $(".flash").data("flashdata");
 	if (FlashData) {
 		Swal.fire({
@@ -165,6 +165,7 @@ $(document).ready(function() {
 		let csrf = $("input[name=CSRFTOKENFQRPLN]").val();
 		$('.btn-add_room').hide();
 		$('.update_room').show();
+		$('.btn-cancel').show();
 		$.ajax({
 			type: "POST",
 			url: "http://localhost/latujikomci/admin/get_room",
@@ -293,6 +294,14 @@ $(document).ready(function() {
 				});
 			}
 		});
+	});
+
+	$('.btn-cancel').click(function () { 
+		$('.btn-add_room').show();
+		$('.update_room').hide();
+		$('#room_name').val('');
+		$('#room_desc').val('');
+		$(this).hide();
 	});
 	
 	$("#search").on('keyup',function () {

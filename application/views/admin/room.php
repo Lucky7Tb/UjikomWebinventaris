@@ -22,6 +22,9 @@
                         <button type="submit" class="btn blue darken-1 btn-add_room">Submit</button>
                         <button type="submit" class="btn blue darken-1 update_room">Update</button>
                     </div>
+                    <div class="col s1 offset-s2">
+                        <button type="reset" class="btn red darken-1 btn-cancel">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
