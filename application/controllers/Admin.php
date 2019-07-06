@@ -9,6 +9,7 @@ class Admin extends CI_Controller
         parent::__construct();
         $this->load->model('Model_item', 'Item');
         $this->load->model('Model_room', 'Room');
+        $this->load->model('Model_type', 'Type');
         $this->load->library('pagination');
         $this->load->library('form_validation');
         if (!$this->session->userdata('login')) {
@@ -45,6 +46,19 @@ class Admin extends CI_Controller
         $this->load->view('layout/footer');
     }
 
+    public function item_type()
+    {
+        $config['base_url'] = 'http://localhost/latujikomci/admin/item_type/';
+        $config['total_rows'] = $this->Type->CountType();
+        $config['per_page'] = 3;
+        $this->pagination->initialize($config);
+        $datas['types'] = $this->Type->GetAllTypes($config['per_page'], $this->uri->segment(3));
+        $title['title'] = "Management Jenis Barang";
+        $this->load->view('layout/header', $title);
+        $this->load->view('admin/item_type', $datas);
+        $this->load->view('layout/footer');
+    }
+
     public function load_table()
     {
         $config['per_page'] = 5;
@@ -73,6 +87,18 @@ class Admin extends CI_Controller
         }
     }
 
+    public function load_type_table()
+    {
+        $config['per_page'] = 3;
+        $this->pagination->initialize($config);
+        $datas['types'] = $this->Type->GetAllTypes($config['per_page'], 0);
+        if (!$this->session->has_userdata('user')) {
+            redirect('admin/index', 'refresh');
+        } else {
+            $this->load->view('admin/table_type', $datas);
+        }
+    }
+
     public function pagination(){
         $config['base_url'] = 'http://localhost/latujikomci/admin/index/';
         $config['total_rows'] = $this->Item->CountItem();
@@ -84,6 +110,14 @@ class Admin extends CI_Controller
     public function room_pagination(){
         $config['base_url'] = 'http://localhost/latujikomci/admin/room/';
         $config['total_rows'] = $this->Room->CountRoom();
+        $config['per_page'] = 3;
+        $this->pagination->initialize($config);
+        $this->load->view('admin/pagination');
+    }
+
+    public function type_pagination(){
+        $config['base_url'] = 'http://localhost/latujikomci/admin/item_type/';
+        $config['total_rows'] = $this->Type->CountType();
         $config['per_page'] = 3;
         $this->pagination->initialize($config);
         $this->load->view('admin/pagination');
@@ -157,6 +191,31 @@ class Admin extends CI_Controller
         }
     }
 
+    public function add_type()
+    {
+        if (!$this->session->has_userdata('user')) {
+            redirect('admin/room', 'refresh');
+        } else {
+            $response['token'] = $this->security->get_csrf_hash();
+            $this->form_validation->set_rules($this->Type->RulesFormType());
+            if (!$this->form_validation->run()) {
+                $response['message'] = $this->Type->ErrorMessageType();
+                $response['status'] = "failed";
+            } else {
+                $response['message'] = "Data berhasil di masukan";
+                $response['status'] = "success";
+                $type_name = $this->input->post('type_name', TRUE);
+                $data = [
+                    'id_jenis' => uniqid(),
+                    'nama_jenis' => $type_name,
+                ];
+                $this->Type->AddTypeData($data);
+            }
+            echo json_encode($response);
+        }
+    }
+
+
     public function update_data()
     {
         if (!$this->session->has_userdata('user')) {
@@ -215,6 +274,30 @@ class Admin extends CI_Controller
         }
     }
 
+    public function update_type()
+    {
+        if (!$this->session->has_userdata('user')) {
+            redirect('admin/index', 'refresh');
+        } else {
+            $response['token'] = $this->security->get_csrf_hash();
+            $this->form_validation->set_rules($this->Type->RulesFormType());
+            if (!$this->form_validation->run()) {
+                $response['message'] = $this->Type->ErrorMessageType();
+                $response['status'] = "failed";
+            } else {
+                $response['message'] = "Data berhasil di update";
+                $response['status'] = "updated";
+                $id = $this->input->post('type_id', TRUE);
+                $type_name = $this->input->post('type_name', TRUE);
+                $data = [
+                    'nama_jenis' => $type_name,
+                ];
+                $this->Type->UpdateTypeData($data, $id);
+            }
+            echo json_encode($response);
+        }
+    }
+
     public function delete_data()
     {
         $response['token'] = $this->security->get_csrf_hash();
@@ -226,6 +309,13 @@ class Admin extends CI_Controller
     {
         $response['token'] = $this->security->get_csrf_hash();
         $this->Room->DeleteRoomData($this->input->post('id', TRUE));
+        echo json_encode($response);
+    }
+
+    public function delete_type()
+    {
+        $response['token'] = $this->security->get_csrf_hash();
+        $this->Type->DeleteTypeData($this->input->post('id', TRUE));
         echo json_encode($response);
     }
 
@@ -242,6 +332,14 @@ class Admin extends CI_Controller
         $id = $this->input->post('id', TRUE);
         $response['token'] = $this->security->get_csrf_hash();
         $response['room'] = $this->Room->GetOneRoom($id);
+        echo json_encode($response);
+    }
+
+    public function get_type()
+    {
+        $id = $this->input->post('id', TRUE);
+        $response['token'] = $this->security->get_csrf_hash();
+        $response['type'] = $this->Type->GetOneType($id);
         echo json_encode($response);
     }
 }

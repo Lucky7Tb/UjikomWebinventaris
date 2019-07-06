@@ -33,6 +33,8 @@ window.addEventListener("load", function() {
 $(document).ready(function() {
 	$('.update_room').hide();
 	$('.btn-cancel').hide();
+	$('.update_type').hide();
+	$('.btn-cancel_type').hide();
 	let FlashData = $(".flash").data("flashdata");
 	if (FlashData) {
 		Swal.fire({
@@ -132,6 +134,41 @@ $(document).ready(function() {
 		});
 	});
 
+	$(".btn-add_type").click(function (e) { 
+		e.preventDefault();
+		$("#type_form").attr("action", "http://localhost/latujikomci/admin/add_type");
+		let url = $("#type_form").attr('action');
+		let data = $("#type_form").serialize();
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: data,
+			dataType: "json",
+			success: function (response) {
+				if (response.status == "failed") {
+					$.each(response.message, function(index, value) {
+						if (value) {
+							M.toast({
+								html: value,
+								classes: "white-text red lighten-1 z-depth-3"
+							});
+						}
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+				} else if (response.status == "success") {
+					M.toast({
+						html: response.message,
+						classes: "white-text green lighten-1 z-depth-3"
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+					$("#type_name").val("");
+					$("#type_data").load("http://localhost/latujikomci/admin/load_type_table");
+					$(".type_pagination").load("http://localhost/latujikomci/admin/type_pagination");
+				}
+			}
+		});
+	});
+
 	$("#datatable").on("click", ".btn-update", function(e) {
 		e.preventDefault();
 		$(".form").attr("action", $(this).attr("href"));
@@ -183,6 +220,30 @@ $(document).ready(function() {
 		});
 	});
 
+	$("#type_data").on('click', '.btn-update_type' ,function (e) { 
+		e.preventDefault();
+		$("#type_form").attr("action", "http://localhost/latujikomci/admin/update_type");
+		let csrf = $("input[name=CSRFTOKENFQRPLN]").val();
+		$('.btn-add_type').hide();
+		$('.update_type').show();
+		$('.btn-cancel_type').show();
+		$.ajax({
+			type: "POST",
+			url: "http://localhost/latujikomci/admin/get_type",
+			data: {
+				id : $(this).data('id'),
+				CSRFTOKENFQRPLN : csrf
+			},
+			dataType: "json",
+			success: function (response) {
+				$('#type_name').val(response.type[0].nama_jenis);
+				$('#type_id').val(response.type[0].id_jenis);
+				$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+			}
+		});
+	});
+
+	
 	$(".update_room").click(function (e) { 
 		e.preventDefault();
 		let url = $("#room_form").attr('action');
@@ -215,6 +276,44 @@ $(document).ready(function() {
 					$(".room_pagination").load("http://localhost/latujikomci/admin/room_pagination");
 					$('.btn-add_room').show();
 					$('.update_room').hide();
+					$('.btn-cancel').hide();
+				}	
+			}
+		});	
+	});
+
+	$(".update_type").click(function (e) { 
+		e.preventDefault();
+		let url = $("#type_form").attr('action');
+		let data = $("#type_form").serialize();
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: data,
+			dataType: "json",
+			success: function (response) {
+				if (response.status == "failed") {
+					$.each(response.message, function(index, value) {
+						if (value) {
+							M.toast({
+								html: value,
+								classes: "white-text red lighten-1 z-depth-3"
+							});
+						}
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+				} else if (response.status == "updated") {
+					M.toast({
+						html: response.message,
+						classes: "white-text green lighten-1 z-depth-3"
+					});
+					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+					$("#type_name").val("");
+					$("#type_data").load("http://localhost/latujikomci/admin/load_type_table");
+					$(".type_pagination").load("http://localhost/latujikomci/admin/type_pagination");
+					$('.btn-add_type').show();
+					$('.update_type').hide();
+					$('.btn-cancel_type').hide();
 				}	
 			}
 		});	
@@ -296,11 +395,56 @@ $(document).ready(function() {
 		});
 	});
 
+	$("#type_data").on("click", ".btn-delete_type", function(e) {
+		e.preventDefault();
+		Swal.fire({
+			title: "Yakin ingin menghapusnya?",
+			text: "Data akan di hapus secara permanent",
+			type: "warning",
+			confirmButtonColor: "#1e88e5",
+			cancelButtonColor: "#d33",
+			showCancelButton: true,
+			confirmButtonText: "Delete",
+			preConfirm: () => {
+				$.ajax({
+					type: "POST",
+					url: $(this).attr("href"),
+					data: {
+						id: $(this).data("id"),
+						CSRFTOKENFQRPLN: $("input[name=CSRFTOKENFQRPLN]").val()
+					},
+					dataType: "json",
+					success: function(response) {
+						$("#type_data").load("http://localhost/latujikomci/admin/load_type_table");
+						$(".type_pagination").load("http://localhost/latujikomci/admin/type_pagination");
+						$("input[name=CSRFTOKENFQRPLN]").val(response.token);
+					}
+				});
+			},
+			allowOutsideClick: () => !Swal.isLoading()
+		}).then(result => {
+			if (result.value) {
+				Swal.fire({
+					title: "Berhasil",
+					text: "Data berhasil di hapus",
+					type: "success"
+				});
+			}
+		});
+	});
+
 	$('.btn-cancel').click(function () { 
 		$('.btn-add_room').show();
 		$('.update_room').hide();
 		$('#room_name').val('');
 		$('#room_desc').val('');
+		$(this).hide();
+	});
+
+	$('.btn-cancel_type').click(function () { 
+		$('.btn-add_type').show();
+		$('.update_type').hide();
+		$('#type_name').val('');
 		$(this).hide();
 	});
 	
