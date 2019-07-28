@@ -33,7 +33,7 @@ class Model_room extends CI_Model
         return [
             [
                 'field' => 'room_name',
-                'rules' => 'required|alpha_numeric_spaces|min_length[10]|max_length[50]'
+                'rules' => 'required|alpha_numeric_spaces|min_length[5]|max_length[50]'
             ],
             [
                 'field' => 'room_desc',

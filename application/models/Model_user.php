@@ -72,6 +72,6 @@ class Model_user extends CI_Model
 
     public function GetUser($Username)
     {
-        return $this->db->get_where('user', ['username' => $Username])->row_array();
+        return $this->db->get_where('user', ['username' => $Username, 'active' => 10])->row_array();
     }
 }

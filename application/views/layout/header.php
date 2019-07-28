@@ -51,6 +51,7 @@
                         <li><a href="<?= site_url('admin/index')?>">Management Barang</a></li>
                         <li><a class="waves-effect" href="<?= site_url('admin/room')?>">Management Ruangan</a></li>
                         <li><a class="waves-effect" href="<?= site_url('admin/item_type')?>">Management Jenis Barang</a></li>
+                        <li><a class="waves-effect notif" href="<?= site_url('admin/user_management')?>">Management User</a></li>
                     </ul>
                 </div>
             </li>
@@ -69,5 +70,3 @@
         <li><a href="<?= base_url('auth/logout') ?>"><i class="material-icons">exit_to_app</i> Logout</a></li>
         <li><a href="#!"><i class="material-icons">settings</i>Setting</a></li>
     </ul>
-
-    <div id="content">

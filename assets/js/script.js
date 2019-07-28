@@ -26,11 +26,45 @@ M.Collapsible.init(Collaps);
 
 M.Dropdown.init(DropDown, Options);
 
-window.addEventListener("load", function() {
+window.addEventListener("load", function () {
 	loading.style.display = "none";
 });
 
-$(document).ready(function() {
+let getData = function (url, loadtable, tableid) {
+	$.ajax({
+		url: `http://localhost/latujikomci/${url}/${loadtable}/`,
+		type: 'GET',
+		async: true,
+		data: {
+			page: window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
+		},
+		dataType: 'html',
+		success: function (data) {
+			$(`${tableid}`).html(data);
+		},
+	});
+}
+
+let getPagination = (url, paginationid, perpage, baseurl, id) => {
+	$.ajax({
+		url: `http://localhost/latujikomci/${url}/getpagination/`,
+		type: 'GET',
+		dataType: 'html',
+		data: {
+			page: window.location.href.substring(window.location.href.lastIndexOf('/') + 1),
+			perpage: perpage,
+			baseurl: baseurl,
+			id: id
+		},
+		success: function (data) {
+			$(`${paginationid}`).append(data);
+			console.log(data)
+		},
+	});
+}
+
+$(document).ready(function () {
+
 	$('.update_room').hide();
 	$('.btn-cancel').hide();
 	$('.update_type').hide();
@@ -44,7 +78,7 @@ $(document).ready(function() {
 		});
 	}
 
-	$(".btn-add").click(function() {
+	$(".btn-add").click(function () {
 		$(".form").attr("action", "http://localhost/latujikomci/admin/add_data");
 		$("#title").html("Tambah Data");
 		$(".btn-submit").html("Submit");
@@ -52,7 +86,7 @@ $(document).ready(function() {
 		$("#itemammount").val("");
 	});
 
-	$(".btn-submit").click(function() {
+	$(".btn-submit").click(function () {
 		let url = $(".form").attr("action");
 		let data = $(".form").serialize();
 		$("#loader").show();
@@ -61,9 +95,9 @@ $(document).ready(function() {
 			url: url,
 			data: data,
 			dataType: "json",
-			success: function(response) {
+			success: function (response) {
 				if (response.status == "failed") {
-					$.each(response.message, function(index, value) {
+					$.each(response.message, function (index, value) {
 						if (value) {
 							M.toast({
 								html: value,
@@ -82,23 +116,25 @@ $(document).ready(function() {
 					$("#itemname").val("");
 					$("#itemammount").val("");
 					$("#loader").hide();
-					$("#datatable").load("http://localhost/latujikomci/admin/load_table");
-					$(".right-align").load("http://localhost/latujikomci/admin/pagination");
+					$(".right-align").empty();
+					getData('admin', 'load_table_item', '#datatable');
+					getPagination('admin', '.right-align', 5, 'admin/index/', 1);
 				} else if (response.status == "updated") {
 					M.toast({
 						html: response.message,
 						classes: "white-text green lighten-1 z-depth-3"
 					});
 					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
-					$("#datatable").load("http://localhost/latujikomci/admin/load_table");
-					$(".right-align").load("http://localhost/latujikomci/admin/pagination");
+					$(".right-align").empty();
+					getData('admin', 'load_table_item', '#datatable');
+					getPagination('admin', '.right-align', 5, 'admin/index/', 1);
 					$("#loader").hide();
 				}
 			}
 		});
 	});
 
-	$(".btn-add_room").click(function (e) { 
+	$(".btn-add_room").click(function (e) {
 		e.preventDefault();
 		$("#room_form").attr("action", "http://localhost/latujikomci/admin/add_room");
 		let url = $("#room_form").attr('action');
@@ -110,7 +146,7 @@ $(document).ready(function() {
 			dataType: "json",
 			success: function (response) {
 				if (response.status == "failed") {
-					$.each(response.message, function(index, value) {
+					$.each(response.message, function (index, value) {
 						if (value) {
 							M.toast({
 								html: value,
@@ -127,14 +163,15 @@ $(document).ready(function() {
 					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					$("#room_name").val("");
 					$("#room_desc").val("");
-					$("#room_data").load("http://localhost/latujikomci/admin/load_room_table");
-					$(".room_pagination").load("http://localhost/latujikomci/admin/room_pagination");
+					$(".room_pagination").empty();
+					getData('admin', 'load_table_room', '#room_data');
+					getPagination('admin', '.room_pagination', 3, 'admin/room/', 2);
 				}
 			}
 		});
 	});
 
-	$(".btn-add_type").click(function (e) { 
+	$(".btn-add_type").click(function (e) {
 		e.preventDefault();
 		$("#type_form").attr("action", "http://localhost/latujikomci/admin/add_type");
 		let url = $("#type_form").attr('action');
@@ -146,7 +183,7 @@ $(document).ready(function() {
 			dataType: "json",
 			success: function (response) {
 				if (response.status == "failed") {
-					$.each(response.message, function(index, value) {
+					$.each(response.message, function (index, value) {
 						if (value) {
 							M.toast({
 								html: value,
@@ -162,14 +199,15 @@ $(document).ready(function() {
 					});
 					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					$("#type_name").val("");
-					$("#type_data").load("http://localhost/latujikomci/admin/load_type_table");
-					$(".type_pagination").load("http://localhost/latujikomci/admin/type_pagination");
+					$(".type_pagination").empty();
+					getData('admin', 'load_table_type', '#type_data');
+					getPagination('admin', '.type_pagination', 3, 'admin/item_type/', 3);
 				}
 			}
 		});
 	});
 
-	$("#datatable").on("click", ".btn-update", function(e) {
+	$("#datatable").on("click", ".btn-update", function (e) {
 		e.preventDefault();
 		$(".form").attr("action", $(this).attr("href"));
 		$(".btn-submit").html("Update");
@@ -183,7 +221,7 @@ $(document).ready(function() {
 				CSRFTOKENFQRPLN: csrf
 			},
 			dataType: "json",
-			success: function(response) {
+			success: function (response) {
 				$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 				$("#itemid").val(response.item[0].id_detail_barang);
 				$("#itemname").val(response.item[0].nama_barang);
@@ -196,7 +234,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$("#room_data").on('click', '.btn-update_room' ,function (e) { 
+	$("#room_data").on('click', '.btn-update_room', function (e) {
 		e.preventDefault();
 		$("#room_form").attr("action", "http://localhost/latujikomci/admin/update_room");
 		let csrf = $("input[name=CSRFTOKENFQRPLN]").val();
@@ -207,8 +245,8 @@ $(document).ready(function() {
 			type: "POST",
 			url: "http://localhost/latujikomci/admin/get_room",
 			data: {
-				id : $(this).data('id'),
-				CSRFTOKENFQRPLN : csrf
+				id: $(this).data('id'),
+				CSRFTOKENFQRPLN: csrf
 			},
 			dataType: "json",
 			success: function (response) {
@@ -220,7 +258,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$("#type_data").on('click', '.btn-update_type' ,function (e) { 
+	$("#type_data").on('click', '.btn-update_type', function (e) {
 		e.preventDefault();
 		$("#type_form").attr("action", "http://localhost/latujikomci/admin/update_type");
 		let csrf = $("input[name=CSRFTOKENFQRPLN]").val();
@@ -231,8 +269,8 @@ $(document).ready(function() {
 			type: "POST",
 			url: "http://localhost/latujikomci/admin/get_type",
 			data: {
-				id : $(this).data('id'),
-				CSRFTOKENFQRPLN : csrf
+				id: $(this).data('id'),
+				CSRFTOKENFQRPLN: csrf
 			},
 			dataType: "json",
 			success: function (response) {
@@ -243,8 +281,8 @@ $(document).ready(function() {
 		});
 	});
 
-	
-	$(".update_room").click(function (e) { 
+
+	$(".update_room").click(function (e) {
 		e.preventDefault();
 		let url = $("#room_form").attr('action');
 		let data = $("#room_form").serialize();
@@ -255,7 +293,7 @@ $(document).ready(function() {
 			dataType: "json",
 			success: function (response) {
 				if (response.status == "failed") {
-					$.each(response.message, function(index, value) {
+					$.each(response.message, function (index, value) {
 						if (value) {
 							M.toast({
 								html: value,
@@ -272,17 +310,18 @@ $(document).ready(function() {
 					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					$("#room_name").val("");
 					$("#room_desc").val("");
-					$("#room_data").load("http://localhost/latujikomci/admin/load_room_table");
-					$(".room_pagination").load("http://localhost/latujikomci/admin/room_pagination");
+					$(".room_pagination").empty();
+					getData('admin', 'load_table_room', '#room_data');
+					getPagination('admin', '.room_pagination', 3, 'admin/room/', 2);
 					$('.btn-add_room').show();
 					$('.update_room').hide();
 					$('.btn-cancel').hide();
-				}	
+				}
 			}
-		});	
+		});
 	});
 
-	$(".update_type").click(function (e) { 
+	$(".update_type").click(function (e) {
 		e.preventDefault();
 		let url = $("#type_form").attr('action');
 		let data = $("#type_form").serialize();
@@ -293,7 +332,7 @@ $(document).ready(function() {
 			dataType: "json",
 			success: function (response) {
 				if (response.status == "failed") {
-					$.each(response.message, function(index, value) {
+					$.each(response.message, function (index, value) {
 						if (value) {
 							M.toast({
 								html: value,
@@ -309,17 +348,18 @@ $(document).ready(function() {
 					});
 					$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					$("#type_name").val("");
-					$("#type_data").load("http://localhost/latujikomci/admin/load_type_table");
-					$(".type_pagination").load("http://localhost/latujikomci/admin/type_pagination");
+					$(".type_pagination").empty();
+					getData('admin', 'load_table_type', '#type_data');
+					getPagination('admin', '.type_pagination', 3, 'admin/item_type/', 3);;
 					$('.btn-add_type').show();
 					$('.update_type').hide();
 					$('.btn-cancel_type').hide();
-				}	
+				}
 			}
-		});	
+		});
 	});
 
-	$("#datatable").on("click", ".btn-delete", function(e) {
+	$("#datatable").on("click", ".btn-delete", function (e) {
 		e.preventDefault();
 		Swal.fire({
 			title: "Yakin ingin menghapusnya?",
@@ -338,9 +378,10 @@ $(document).ready(function() {
 						CSRFTOKENFQRPLN: $("input[name=CSRFTOKENFQRPLN]").val()
 					},
 					dataType: "json",
-					success: function(response) {
-						$("#datatable").load("http://localhost/latujikomci/admin/load_table");
-						$(".right-align").load("http://localhost/latujikomci/admin/pagination");
+					success: function (response) {
+						$(".right-align").empty();
+						getData('admin', 'load_table_item', '#datatable');
+						getPagination('admin', '.right-align', 5, 'admin/index/', 1);
 						$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					}
 				});
@@ -357,7 +398,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$("#room_data").on("click", ".btn-delete_room", function(e) {
+	$("#room_data").on("click", ".btn-delete_room", function (e) {
 		e.preventDefault();
 		Swal.fire({
 			title: "Yakin ingin menghapusnya?",
@@ -376,9 +417,10 @@ $(document).ready(function() {
 						CSRFTOKENFQRPLN: $("input[name=CSRFTOKENFQRPLN]").val()
 					},
 					dataType: "json",
-					success: function(response) {
-						$("#room_data").load("http://localhost/latujikomci/admin/load_room_table");
-						$(".room_pagination").load("http://localhost/latujikomci/admin/room_pagination");
+					success: function (response) {
+						$(".room_pagination").empty();
+						getData('admin', 'load_table_room', '#room_data');
+						getPagination('admin', '.room_pagination', 3, 'admin/room/', 2);
 						$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					}
 				});
@@ -395,7 +437,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$("#type_data").on("click", ".btn-delete_type", function(e) {
+	$("#type_data").on("click", ".btn-delete_type", function (e) {
 		e.preventDefault();
 		Swal.fire({
 			title: "Yakin ingin menghapusnya?",
@@ -414,9 +456,10 @@ $(document).ready(function() {
 						CSRFTOKENFQRPLN: $("input[name=CSRFTOKENFQRPLN]").val()
 					},
 					dataType: "json",
-					success: function(response) {
-						$("#type_data").load("http://localhost/latujikomci/admin/load_type_table");
-						$(".type_pagination").load("http://localhost/latujikomci/admin/type_pagination");
+					success: function (response) {
+						$(".type_pagination").empty();
+						getData('admin', 'load_table_type', '#type_data');
+						getPagination('admin', '.type_pagination', 3, 'admin/item_type/', 3);
 						$("input[name=CSRFTOKENFQRPLN]").val(response.token);
 					}
 				});
@@ -433,7 +476,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$('.btn-cancel').click(function () { 
+	$('.btn-cancel').click(function () {
 		$('.btn-add_room').show();
 		$('.update_room').hide();
 		$('#room_name').val('');
@@ -441,22 +484,22 @@ $(document).ready(function() {
 		$(this).hide();
 	});
 
-	$('.btn-cancel_type').click(function () { 
+	$('.btn-cancel_type').click(function () {
 		$('.btn-add_type').show();
 		$('.update_type').hide();
 		$('#type_name').val('');
 		$(this).hide();
 	});
-	
-	$("#search").on('keyup',function () {
+
+	$("#search").on('keyup', function () {
 		let data = $(this).val();
 		let urisegment = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
 		$(".image").show();
-		if(data === ''){
+		if (data === '') {
 			$(".image").hide();
 			$("#datatable").load(`http://localhost/latujikomci/admin/load_table?uri=${urisegment}`);
-		}else{
-			$("#datatable").load(`http://localhost/latujikomci/admin/search_data?keyword=${data}`, function(){
+		} else {
+			$("#datatable").load(`http://localhost/latujikomci/admin/search_data?keyword=${data}`, function () {
 				$(".image").hide();
 			});
 		}

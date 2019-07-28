@@ -17,6 +17,21 @@ class Admin extends CI_Controller
         }
     }
 
+    public function getpagination(){
+        $config['base_url'] = 'http://localhost/latujikomci/'.$this->input->get('baseurl');
+        if($this->input->get('id') == 1){
+             $config['total_rows'] = $this->Item->CountItem();
+        }else if($this->input->get('id') == 2){
+            $config['total_rows'] = $this->Room->CountRoom();
+        }else if($this->input->get('id') == 3){
+            $config['total_rows'] = $this->Type->CountType();
+        }
+        $config['per_page'] = $this->input->get('perpage');
+        $config['cur_page'] = $this->input->get("page");
+        $this->pagination->initialize($config);
+        echo $this->pagination->create_links();
+    }
+
     public function index()
     {
         $config['base_url'] = 'http://localhost/latujikomci/admin/index/';
@@ -59,15 +74,11 @@ class Admin extends CI_Controller
         $this->load->view('layout/footer');
     }
 
-    public function load_table()
+    public function load_table_item()
     {
         $config['per_page'] = 5;
         $this->pagination->initialize($config);
-        $urisegment = $this->input->get('uri');
-        if($urisegment == ''){
-            $urisegment = 0;
-        }
-        $datas['datas'] = $this->Item->GetAllItem($config['per_page'],$urisegment);
+        $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->input->get("page"));
         if (!$this->session->has_userdata('user')) {
             redirect('admin/index', 'refresh');
         } else {
@@ -75,11 +86,11 @@ class Admin extends CI_Controller
         }
     }
     
-    public function load_room_table()
+    public function load_table_room()
     {
         $config['per_page'] = 3;
         $this->pagination->initialize($config);
-        $datas['rooms'] = $this->Room->GetAllRooms($config['per_page'], 0);
+        $datas['rooms'] = $this->Room->GetAllRooms($config['per_page'], $this->input->get("page"));
         if (!$this->session->has_userdata('user')) {
             redirect('admin/index', 'refresh');
         } else {
@@ -87,40 +98,16 @@ class Admin extends CI_Controller
         }
     }
 
-    public function load_type_table()
+    public function load_table_type()
     {
         $config['per_page'] = 3;
         $this->pagination->initialize($config);
-        $datas['types'] = $this->Type->GetAllTypes($config['per_page'], 0);
+        $datas['types'] = $this->Type->GetAllTypes($config['per_page'], $this->input->get("page"));
         if (!$this->session->has_userdata('user')) {
             redirect('admin/index', 'refresh');
         } else {
             $this->load->view('admin/table_type', $datas);
         }
-    }
-
-    public function pagination(){
-        $config['base_url'] = 'http://localhost/latujikomci/admin/index/';
-        $config['total_rows'] = $this->Item->CountItem();
-        $config['per_page'] = 5;
-        $this->pagination->initialize($config);
-        $this->load->view('admin/pagination');
-    }
-
-    public function room_pagination(){
-        $config['base_url'] = 'http://localhost/latujikomci/admin/room/';
-        $config['total_rows'] = $this->Room->CountRoom();
-        $config['per_page'] = 3;
-        $this->pagination->initialize($config);
-        $this->load->view('admin/pagination');
-    }
-
-    public function type_pagination(){
-        $config['base_url'] = 'http://localhost/latujikomci/admin/item_type/';
-        $config['total_rows'] = $this->Type->CountType();
-        $config['per_page'] = 3;
-        $this->pagination->initialize($config);
-        $this->load->view('admin/pagination');
     }
 
     public function search_data(){

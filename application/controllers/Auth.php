@@ -52,6 +52,19 @@ class Auth extends CI_Controller
 				redirect('admin/index', 'refresh');
 			} else {
 				$this->session->set_flashdata('success', 'Registrasi telah berhasil !!!');
+				$options = array(
+					'cluster' => 'ap1',
+					'useTLS' => true
+				);
+				$pusher = new Pusher\Pusher(
+					'6e49ca7b930fac5e00f3',
+					'a7181f27bc21d40de468',
+					'831787',
+					$options
+				);
+
+				$data['message'] = 'success';
+				$pusher->trigger('my-channel', 'my-event', $data);
 				redirect('auth/login', 'refresh');
 			}
 		}
