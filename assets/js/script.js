@@ -64,7 +64,6 @@ let getPagination = (url, paginationid, perpage, baseurl, id) => {
 }
 
 $(document).ready(function () {
-
 	$('.update_room').hide();
 	$('.btn-cancel').hide();
 	$('.update_type').hide();

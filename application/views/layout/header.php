@@ -51,7 +51,11 @@
                         <li><a href="<?= site_url('admin/index')?>">Management Barang</a></li>
                         <li><a class="waves-effect" href="<?= site_url('admin/room')?>">Management Ruangan</a></li>
                         <li><a class="waves-effect" href="<?= site_url('admin/item_type')?>">Management Jenis Barang</a></li>
-                        <li><a class="waves-effect notif" href="<?= site_url('admin/user_management')?>">Management User</a></li>
+                        <?php if($user !== 0): ?>
+                            <li><a class="waves-effect notif" href="<?= site_url('admin/user_management')?>"><span class="new badge"><span class="notif"></span><?= $user ?></span> Management User</a></li>
+                        <?php else:?>
+                          <li><a class="waves-effect notif" href="<?= site_url('admin/user_management')?>"><span class="new badge"><span class="notif"></span></span> Management User</a></li>
+                        <?php endif;?>
                     </ul>
                 </div>
             </li>

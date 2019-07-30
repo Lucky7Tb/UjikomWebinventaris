@@ -18,18 +18,23 @@ class Auth extends CI_Controller
 		$User = $this->User->GetUser($Username);
 
 		if ($User) {
-			if (password_verify($Password, $User['password'])) {
-				$Data = [
-					'user' => $Username,
-					'level' => $User['level'],
-					'email' => $User['email'],
-					'login' => TRUE
-				];
-				$this->session->set_userdata($Data);
-				redirect('admin/index/', 'refresh');
-			} else {
-				$this->session->set_flashdata('danger', 'Password salah!!!');
+			if($User['status'] == 0){
+				$this->session->set_flashdata('danger', "Akun anda belum aktif silahkan hubungi admin");
 				redirect('auth/login', 'refresh');
+			}else if($User['status'] == 10){
+				if (password_verify($Password, $User['password'])) {
+					$Data = [
+						'user' => $Username,
+						'level' => $User['level'],
+						'email' => $User['email'],
+						'login' => TRUE
+					];
+					$this->session->set_userdata($Data);
+					redirect('admin/index/', 'refresh');
+				} else {
+					$this->session->set_flashdata('danger', 'Password salah!!!');
+					redirect('auth/login', 'refresh');
+				}
 			}
 		} else {
 			$this->session->set_flashdata('danger', "Tidak ada username seperti : $Username !!!");
@@ -64,6 +69,7 @@ class Auth extends CI_Controller
 				);
 
 				$data['message'] = 'success';
+				$data['user'] = $this->User->CountUserNotActived();
 				$pusher->trigger('my-channel', 'my-event', $data);
 				redirect('auth/login', 'refresh');
 			}

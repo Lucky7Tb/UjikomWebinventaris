@@ -40,7 +40,7 @@
                         <div class="input-field col s6">
                             <select id="type" name="type">
                                 <?php foreach ($types as $type) : ?>
-                                    <option value="<?= $type->id_jenis ?>"><?= $type->nama_jenis ?></option>
+                                    <option value="<?= $type->id_jenis ?>"><?php xss_filter($type->nama_jenis)?></option>
                                 <?php endforeach; ?>
                             </select>
                             <label>Jenis Barang</label>
@@ -48,7 +48,7 @@
                         <div class="input-field col s12">
                             <select id="room" name="room">
                                 <?php foreach ($rooms as $room) : ?>
-                                    <option value="<?= $room->id_ruang ?>"><?= $room->nama_ruang ?></option>
+                                    <option value="<?= $room->id_ruang ?>"><?php xss_filter( $room->nama_ruang)?></option>
                                 <?php endforeach; ?>
                             </select>
                             <label>Ruangan</label>
@@ -76,11 +76,11 @@
             <tbody id="datatable">
                <?php foreach($datas as $data):?>
                 <tr>
-                    <td><?= $data->nama_barang?></td>
-                    <td><?= $data->kondisi_barang?></td>
-                    <td><?= $data->jumlah_barang?></td>
-                    <td><?= $data->nama_jenis?></td>
-                    <td><?= $data->nama_ruang?></td>
+                    <td><?php xss_filter($data->nama_barang)?></td>
+                    <td><?php xss_filter($data->kondisi_barang)?></td>
+                    <td><?php xss_filter($data->jumlah_barang)?></td>
+                    <td><?php xss_filter($data->nama_jenis)?></td>
+                    <td><?php xss_filter( $data->nama_ruang)?></td>
                     <td>
                         <a data-target="modal1" data-id="<?= $data->id_detail_barang ?>" class="modal-trigger btn-update" href="<?= base_url('admin/update_data') ?>"><i class="material-icons">create</i>
                         </a>

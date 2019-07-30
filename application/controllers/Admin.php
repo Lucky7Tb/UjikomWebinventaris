@@ -10,6 +10,7 @@ class Admin extends CI_Controller
         $this->load->model('Model_item', 'Item');
         $this->load->model('Model_room', 'Room');
         $this->load->model('Model_type', 'Type');
+        $this->load->model('Model_user', 'User');
         $this->load->library('pagination');
         $this->load->library('form_validation');
         if (!$this->session->userdata('login')) {
@@ -42,8 +43,9 @@ class Admin extends CI_Controller
         $datas['datas'] = $this->Item->GetAllItem($config['per_page'], $this->uri->segment(3));
         $datas['types'] = $this->Item->GetItemType();
         $datas['rooms'] = $this->Item->GetRooms();
-        $title['title'] = "Dashboard";
-        $this->load->view('layout/header', $title);
+        $header['user'] = $this->User->CountUserNotActived();
+        $header['title'] = "Dashboard";
+        $this->load->view('layout/header', $header);
         $this->load->view('admin/index', $datas);
         $this->load->view('layout/footer');
     }
@@ -55,8 +57,9 @@ class Admin extends CI_Controller
         $config['per_page'] = 3;
         $this->pagination->initialize($config);
         $datas['rooms'] = $this->Room->GetAllRooms($config['per_page'], $this->uri->segment(3));
-        $title['title'] = "Management Ruangan";
-        $this->load->view('layout/header', $title);
+        $header['title'] = "Management Ruangan";
+        $header['user'] = $this->User->CountUserNotActived();
+        $this->load->view('layout/header', $header);
         $this->load->view('admin/room', $datas);
         $this->load->view('layout/footer');
     }
@@ -68,8 +71,9 @@ class Admin extends CI_Controller
         $config['per_page'] = 3;
         $this->pagination->initialize($config);
         $datas['types'] = $this->Type->GetAllTypes($config['per_page'], $this->uri->segment(3));
-        $title['title'] = "Management Jenis Barang";
-        $this->load->view('layout/header', $title);
+        $header['title'] = "Management Jenis Barang";
+        $header['user'] = $this->User->CountUserNotActived();
+        $this->load->view('layout/header', $header);
         $this->load->view('admin/item_type', $datas);
         $this->load->view('layout/footer');
     }
